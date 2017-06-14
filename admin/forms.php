@@ -20,6 +20,13 @@
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
 </head>
 
 <body>
@@ -121,7 +128,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Ed Sheeran <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i><b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
@@ -143,16 +150,16 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
                     <li>
-                        <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                        <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
                     <li>
-                        <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Respondents</a>
+                        <a href="charts.php"><i class="fa fa-fw fa-bar-chart-o"></i> Respondents</a>
+                    </li>
+                    <li>
+                        <a href="tables.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
                     </li>
                     <li class="active">
-                        <a href="tables.html"><i class="fa fa-fw fa-table"></i> Surveys</a>
-                    </li>
-                    <li>
-                        <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
+                        <a href="forms.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
                 </ul>
             </div>
@@ -167,60 +174,146 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Surveys
+                            Create a Survey!
                         </h1>
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
                             </li>
                             <li class="active">
-                                <i class="fa fa-table"></i> Surveys
+                                <i class="fa fa-edit"></i> Create a Survey!
                             </li>
                         </ol>
-                    </div>
-                    <div class="col-lg-12">
-                        <a href="../admin/forms.html" class="btn btn-info" role="button"><i class="fa fa-plus" aria-hidden="true"></i>Create a Survey</a>
                     </div>
                 </div>
                 <!-- /.row -->
 
                 <div class="row">
-                    
-                            
-                    <div class="col-lg-12">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Reponses</th>
-                                        <th>More</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                      
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                    
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="col-lg-6">
+
+                        <form role="form">
+
+                            <div class="form-group">
+                                <label>Text Input</label>
+                                <input class="form-control">
+                                <p class="help-block">Example block-level help text here.</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Text Input with Placeholder</label>
+                                <input class="form-control" placeholder="Enter text">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Static Control</label>
+                                <p class="form-control-static">email@example.com</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label>File input</label>
+                                <input type="file">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Text area</label>
+                                <textarea class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Checkboxes</label>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" value="">Checkbox 1
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" value="">Checkbox 2
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" value="">Checkbox 3
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Inline Checkboxes</label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox">1
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox">2
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox">3
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Radio Buttons</label>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>Radio 1
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">Radio 2
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios3" value="option3">Radio 3
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Inline Radio Buttons</label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline1" value="option1" checked>1
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline2" value="option2">2
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline3" value="option3">3
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Selects</label>
+                                <select class="form-control">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Multiple Selects</label>
+                                <select multiple class="form-control">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-default">Submit Button</button>
+                            <button type="reset" class="btn btn-default">Reset Button</button>
+
+                        </form>
+
                     </div>
                 </div>
+                <!-- /.row -->
+
             </div>
             <!-- /.container-fluid -->
 

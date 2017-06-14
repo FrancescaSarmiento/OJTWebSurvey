@@ -153,16 +153,16 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
                     <li>
-                        <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                        <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
                     <li class="active">
-                        <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Respondents</a>
+                        <a href="charts.php"><i class="fa fa-fw fa-bar-chart-o"></i> Respondents</a>
                     </li>
                     <li>
-                        <a href="tables.html"><i class="fa fa-fw fa-table"></i> Surveys</a>
+                        <a href="tables.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
                     </li>
                     <li>
-                        <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
+                        <a href="forms.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
                 </ul>
             </div>
