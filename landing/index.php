@@ -27,6 +27,14 @@
 </head>
 
 <body>
+    <?php
+
+        $ntu_survey = new mysqli("localhost", "root", "", "ntu_survey");
+        // Check connection
+        if ($ntu_survey->connect_error) {
+            die("Connection failed: " . $ntu_survey->connect_error);
+        }
+    ?>
 
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
@@ -54,7 +62,7 @@
                         <a href="#contact">Credits</a>
                     </li>
                     <li>
-                        <a href="../login/reg.php">Sign Up</a>
+                        <a href="../registration/index.php">Sign Up</a>
                     </li>
                 </ul>
             </div>
@@ -128,7 +136,7 @@
                 <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
                     <hr class="section-heading-spacer">
                     <div class="clearfix"></div>
-                    <h2 class="section-heading">DRIVEN BY<br><br>
+                    <h2 class="section-heading">DRIVEN BY<br><br></h2>
                     <p class="lead">We are driven not only by the ambition to succeed in the professional world, but also by our advocacy to nation building. We do our part through hands-on action, immersion and volunteerism.</p>
                 </div>
                 <div class="col-lg-5 col-sm-pull-6  col-sm-6">
@@ -150,7 +158,7 @@
                 <div class="col-lg-5 col-sm-6">
                     <hr class="section-heading-spacer">
                     <div class="clearfix"></div>
-                    <h2 class="section-heading">EXCELLENCY<br><br>
+                    <h2 class="section-heading">EXCELLENCY<br><br></h2>
                     <p class="lead">In our careers and our part in the community, we strive for excellence. We are catalysts of progress. We are agents of change. We are the Nobility.</p>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
@@ -176,11 +184,11 @@
                 <div class="col-lg-6">
                     <ul class="list-inline banner-social-buttons">
                         <li>
-                            <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="glyphicon glyphicon-pawn"></i> <span class="network-name">SIGN-UP</span></a>
+                            <a href="../registration/index.php" class="btn btn-default btn-lg"><i class="glyphicon glyphicon-pawn"></i> <span class="network-name">SIGN-UP</span></a>
                         </li>
                         
                         <li>
-                            <a href="https://github.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="glyphicon glyphicon-king"></i> <span class="network-name">LOG-IN</span></a>
+                            <a href="../login/index.php" class="btn btn-default btn-lg"><i class="glyphicon glyphicon-king"></i> <span class="network-name">LOG-IN</span></a>
                         </li>
                     </ul>
                 </div>

@@ -1,7 +1,7 @@
 <?php
     session_start();
 ?>
-<!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -44,7 +44,6 @@
             die("Connection failed: " . $ntu_survey->connect_error);
         }
     ?>
-
     <div id="wrapper">
 
         <!-- Navigation -->
@@ -57,7 +56,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../admin/index.php">NTU Admin</a>
+                <a class="navbar-brand" href="../admin/index.php">NTU Respondent</a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -156,12 +155,6 @@
                         <li class="divider"></li>
                         <li>
                             <a href="../landing/index.php"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                             <?php
-                                if(isset($_POST['Logout'])) {
-                                    $_SESSION['loggedin'] = false;
-                                    echo "<script> window.location.href='../index.php' </script>";
-                                } 
-                            ?>
                         </li>
                     </ul>
                 </li>
@@ -172,15 +165,7 @@
                     <li class="active">
                         <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
-                    <li>
-                        <a href="respondents.php"><i class="fa fa-fw fa-bar-chart-o"></i> Respondents</a>
-                    </li>
-                    <li>
-                        <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
-                    </li>
-                    <li>
-                        <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
-                    </li>
+                    
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
