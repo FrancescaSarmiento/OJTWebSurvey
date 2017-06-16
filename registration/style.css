@@ -1,9 +1,5 @@
 body {    
     padding-top: 0;
-    background-image: url(../landing/img/intro-bg.jpg);
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-size: cover;
 }
 
 form{
@@ -11,16 +7,6 @@ form{
     position:absolute;
     margin-left: 35%;
     
-    
-}
-
-@font-face{
-    font-family: Custom;
-    src: url(MyriadPro-Regular.otf);
-}
-
-label{
-    font-family: Custom;
     
 }
 
@@ -34,7 +20,6 @@ fieldset {
     padding: 2%;
     padding-left: 3%;
     padding-bottom: 1%;
-    background-color: aliceblue ;
   
     
 }
@@ -75,27 +60,24 @@ button:hover {
 .submitbtn {
     width: 100%;
     padding: 5% ,6%;
-    background-color: limegreen;
+    background-color: greenyellow;
     
 }
 .btn{
     width: 100%;
     padding: 5% ,6%;
-    background-color: darkred;
+    background-color: skyblue;
 }
 .backbtn{
-    height: 5%;
-    width: 4%;
+    height: auto;
+    width: 10%;
     padding: 1%;
-    background-color: deepskyblue;
-    color: white;
+    background-color: skyblue;
 }
 
 .container{
-    padding-top:5%;
-    padding-left: 4%;
+    padding-top:2%;
 }
-
 
 
 

@@ -7,7 +7,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title> Sign Up Now! | NTU </title>
+        <title> Sign Up Now! | NTU Survey </title>
         <link href="style.css" type="text/css" rel="stylesheet" > 
         
     </head>
@@ -27,7 +27,7 @@
         }
     ?>
     <div id = "top">
-         <a href="../landing/index.php"><button type="button" class="backbtn"><strong> BACK</strong></button></a>
+         <a href="../landing/index.php"><button type="button" class="backbtn">Back</button></a>
     </div>
     <div class="container">
         <form role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
@@ -84,10 +84,9 @@
                 <label><b>Team</b></label>
                 <input type="text" placeholder="Enter your Team" name="team" required>
                     
-                <button type="submit" class="submitbtn" name="register" ><strong>SIGN UP!</strong></button>
+                <button type="submit" class="submitbtn" name="register" >Sign Up</button>
                 <hr>
                 <a href="../login/index.php"><button type="button" class="btn">Already have an account?</button></a>
-                <br><br>
                     
                     
             </fieldset>

@@ -7,7 +7,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title> Log in now! | NTU </title>
+        <title> Log in now! | NTU Survey </title>
         <link href="style.css" type="text/css" rel="stylesheet" > 
         
     </head>
@@ -22,7 +22,7 @@
             die("Connection failed: " . $ntu_survey->connect_error);
         }
     ?>
-    <div class = "container">
+    <div class="container">
         <div class = "loginForm"> 
             <?php
                 $err = '';
@@ -55,18 +55,18 @@
             <form role="form" method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
 
                  <div class="container">
-                     <label><strong>USERNAME</strong></label>
+                     <label><b>Username</b></label>
                      <input type="text" placeholder="Enter Username" name="uname" required>
                      <br>
                      <br>
-                     <label><strong>PASSWORD</strong></label>
+                     <label><b>Password</b></label>
                      <input type="password" placeholder="Enter Password" name="psw" required>
                      <br>
                      <br>
                      
                      <div class="btn">
                          <a href="../landing/index.php"><button type="button" class="cancelbtn">Cancel</button></a>
-                         <button type="submit" class="submitbtn" name="login"><strong>LOGIN</strong></button>
+                         <button type="submit" class="submitbtn" name="login">Login</button>
                      </div>     
                                            
                 </div>
