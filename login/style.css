@@ -1,6 +1,11 @@
+@font-face{
+    font-family: Custom;
+    src: url(MyriadPro-Regular.otf);
+}
+
 body {
-    
     padding-top: 0;
+    background-image: url(../landing/img/intro-bg.jpg);
 }
 
 /* Bordered form */
@@ -10,22 +15,26 @@ form {
     display: inline-block;
     border: 3px  #f1f1f1;
     border-style:groove;
-    height: 50%;
-    width: 35%;
+    height: 160%; !important
+    width: 25%;
     padding: 4%;
-  
-    
 }
+
+label{
+    font-family: Custom;
+}
+
 
 /* Full-width inputs */
 input[type=text], input[type=password] {
     width: 100%;
-    padding: 12px 20px;
+    padding: 10px 15px;
     margin: 8px 0;
     display: inline-block;
     border: 1px solid #ccc;
     box-sizing: border-box;
 }
+
 
 /* Set a style for all buttons */
 button {
@@ -48,25 +57,25 @@ button:hover {
 /* Extra style for the cancel button (red) */
 .cancelbtn {
     width: auto;
-    padding: 10px 18px;
+    padding: 9px 9px;
     background-color: #f44336;
 }
 .submitbtn {
     width: auto;
-    padding: 10px 18px;
-    background-color: skyblue;
-    margin-left: 50%;
+    padding: 9px 9px;
+    background-color: deepskyblue;
+    margin-left: 45%;
 }
 
 
 .loginForm{
     position: absolute;
-    margin-top: 8%;
-    margin-left:20%;
+    margin-top: 15%;
+    margin-left:39%;
     width: 70%;
 }
 .btn{
-    padding: 2%;
+    padding: 1%;
     margin-bottom: 0;
 }
 

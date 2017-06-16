@@ -83,7 +83,7 @@
                     <div class="intro-message">
                         <img src="img/ntulogo.png" class="logo">
                         <h1>Noble Trends Unbound</h1>
-                        <h3>Local Surveyor for your needs. Get Started!</h3>
+                        <h3>Welcome! To Local Surveyor for your needs. Get Started!</h3>
                         
                         <hr class="intro-divider">
                         <ul class="list-inline intro-social-buttons">
