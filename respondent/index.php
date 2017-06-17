@@ -12,7 +12,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>NTU | Admin</title>
+    <title>Respondent | ADMIN</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -56,7 +56,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../admin/index.php">NTU Respondent</a>
+                <a class="navbar-brand" href="../admin/index.php">NTU | Respondent</a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -163,7 +163,7 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
                     <li class="active">
-                        <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                        <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Surveys</a>
                     </li>
                     
                 </ul>
@@ -179,7 +179,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            DASHBOARD <small>Statistics Overview</small>
+                            SUMMARY <small>Surveys Available</small>
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
@@ -194,7 +194,7 @@
                     <div class="col-lg-12">
                         <div class="alert alert-info alert-dismissable">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <i class="fa fa-info-circle"></i>  <strong>Create a new survey?</strong> Try out <a href="http://startbootstrap.com/template-overviews/sb-admin-2" class="alert-link">NTU Surveys</a> for additional features!
+                            <i class="fa fa-info-circle"></i>  <strong>Answer a new survey?</strong> Try out <a href="http://startbootstrap.com/template-overviews/sb-admin-2" class="alert-link">NTU Surveys</a> for additional features!
                         </div>
                     </div>
                 </div>

@@ -6762,3 +6762,12 @@ button.close {
         
     
 }
+
+@font-face{
+    font-family: Custom;
+    src: url(../login/MyriadPro-Regular.otf);
+}
+
+a{
+    font-family: Custom;
+}
