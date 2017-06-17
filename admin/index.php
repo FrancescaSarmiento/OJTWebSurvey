@@ -1,5 +1,19 @@
 <?php
     session_start();
+
+    if ($_SESSION['loggedin'] == false ) {
+    header('Location: ../login/index.php');
+    }
+?>
+
+<?php
+//Connect to MySQL Database
+$conn = mysqli_connect("localhost","root","","ntu_survey");
+
+// Test Connection
+if(mysqli_connect_errno()){
+	echo 'Failed to connect to MySQL: '.$mysqli_connect_error();	
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,19 +50,10 @@
 </head>
 
 <body>
-    <?php
-
-        $ntu_survey = new mysqli("localhost", "root", "", "ntu_survey");
-        // Check connection
-        if ($ntu_survey->connect_error) {
-            die("Connection failed: " . $ntu_survey->connect_error);
-        }
-    ?>
 
     <div id="wrapper">
 
-        <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+       <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -155,7 +160,8 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="../landing/index.php"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                            <a href="../landing/index.php" name="Logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                            
                              <?php
                                 if(isset($_POST['Logout'])) {
                                     $_SESSION['loggedin'] = false;
