@@ -27,7 +27,7 @@
         } else {
             $sql = "INSERT INTO survey (title, userRequired, dateCreated) VALUES ('$title','$user',now())";                        
             if ($ntu_survey->query($sql) === TRUE){ 
-                $_SESSION['title'] = $surveyTitle;  
+                $_SESSION['title'] = $title;  
                 header("Location: ../admin/question.php");
             } else {
                 echo "Error: " . $sql . "<br>" . $ntu_survey->error;

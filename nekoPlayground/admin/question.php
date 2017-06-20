@@ -4,8 +4,7 @@
     if ($_SESSION['loggedin'] == false ) {
     header('Location: ../login/index.php');
     }
-    
-   
+  
 ?>
 
 
@@ -28,13 +27,13 @@
             $choices[3] = $_POST['c3'];
             $choices[4] = $_POST['c4'];
             
+            $title = $_SESSION['title'];
             
-                                                                           
-            $sql = "INSERT INTO question (questionNo, q_text) VALUES ('$num','$question')";
+            $sql = "INSERT INTO question (questionNo, q_text, surveyName) VALUES ('$num','$question','$title')";
                                             
             if ($ntu_survey->query($sql) === TRUE) {  
                 foreach($choices as $ch => $value ){
-                $sql1 = "INSERT into choice (c_text, q_id) VALUES ('$value','$num')";
+                $sql1 = "INSERT into choice (c_text, q_Number) VALUES ('$value','$num')";
                 if ($ntu_survey->query($sql1) === TRUE) {
                 } else {
                     echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
