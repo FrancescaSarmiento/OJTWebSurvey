@@ -1,5 +1,8 @@
 <?php
     session_start();
+     if ($_SESSION['loggedin'] == false ) {
+    header('Location: ../login/index.php');
+    }
 ?>
 
 <html>
@@ -38,13 +41,13 @@
                     if(mysqli_num_rows($resultR) > 0) {
                     
                     $_SESSION['loggedin'] = true;
-                    $_SESSION['username'] = $email;
+                    $_SESSION['username'] = $username;
 
                     header("Location: ../respondent/index.php");
 
                     }else if(mysqli_num_rows($resultA) > 0) {
                     $_SESSION['loggedin'] = true;
-                    $_SESSION['username'] = $email;
+                    $_SESSION['username'] = $username;
                     header("Location: ../admin/index.php"); 
 
                     }else {

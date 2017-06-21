@@ -18,14 +18,16 @@
     if(isset($_POST["addQuestion"])) {      
         $title = $_POST["title"];
         $user = $_POST["opt"];
-                           
+        
+        $username = $_SESSION['username'];
+        
         
         $result = mysqli_query($ntu_survey, "SELECT * FROM survey WHERE title = '$title'");
         if(mysqli_num_rows($result) > 0) {
             $eMsg = "Title is already taken!";                                     
             mysqli_free_result($result);
         } else {
-            $sql = "INSERT INTO survey (title, userRequired, dateCreated) VALUES ('$title','$user',now())";                        
+            $sql = "INSERT INTO survey (title, userRequired, dateCreated, author) VALUES ('$title','$user',now(),'$username')";                        
             if ($ntu_survey->query($sql) === TRUE){ 
                 $_SESSION['title'] = $title;  
                 header("Location: ../admin/question.php");
@@ -209,7 +211,7 @@
                         </h1>
                         <ol class="breadcrumb">
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
+                                <i class="fa fa-dashboard"></i>  <a href="index.php">Dashboard</a>
                             </li>
                             <li class="active">
                                 <i class="fa fa-edit"></i> Create a Survey!

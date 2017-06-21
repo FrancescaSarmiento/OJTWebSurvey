@@ -29,11 +29,14 @@
             
             $title = $_SESSION['title'];
             
+            
+            
             $sql = "INSERT INTO question (questionNo, q_text, surveyName) VALUES ('$num','$question','$title')";
                                             
-            if ($ntu_survey->query($sql) === TRUE) {  
+            if ($ntu_survey->query($sql) === TRUE) { 
+                
                 foreach($choices as $ch => $value ){
-                $sql1 = "INSERT into choice (c_text, q_Number) VALUES ('$value','$num')";
+                $sql1 = "INSERT into choice (c_text, q_Number, surveyTitle) VALUES ('$value','$num','$title')";
                 if ($ntu_survey->query($sql1) === TRUE) {
                 } else {
                     echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
@@ -226,7 +229,7 @@
                         </h1>
                         <ol class="breadcrumb">
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="index.html"> Create a Survey!</a>
+                                <i class="fa fa-dashboard"></i>  <a href="index.php"> Create a Survey!</a>
                             </li>
                             <li class="active">
                                 <i class="fa fa-edit"></i> Create a Question!
