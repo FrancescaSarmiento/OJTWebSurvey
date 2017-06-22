@@ -4,7 +4,8 @@
     if ($_SESSION['loggedin'] == false ) {
     header('Location: ../login/index.php');
     }
-  
+    
+   
 ?>
 
 
@@ -18,29 +19,47 @@
 ?>
 <?php
         if (isset($_POST["questionAdd"])){
-            $num = $_POST['num'];
-            $question = $_POST['question'];
+            $surveyTitle = $_SESSION['surveyTitle'];
+            $query="SELECT surveyId from survey where surveyTitle='$surveyTitle'";
+            $result = mysqli_query($ntu_survey, $query);
+            $row = $result->fetch_assoc();
+            $surveyId = $row["surveyId"];
+            $questionId = $_POST['questionId'];
+            $questionNo = $_POST['questionNo'];
+            $questionDescription = $_POST['questionDescription'];
+            
             $choices = array();
             
             $choices[1] = $_POST['c1'];
             $choices[2] = $_POST['c2'];
             $choices[3] = $_POST['c3'];
             $choices[4] = $_POST['c4'];
+            $choices[5] = $_POST['c5'];
             
-            $title = $_SESSION['title'];
+            $sql = "INSERT INTO `question` ( questionNo, questionDescription, surveyId) VALUES ('$questionNo','$questionDescription' , '$surveyId')";
             
             
             
-            $sql = "INSERT INTO question (questionNo, q_text, surveyName) VALUES ('$num','$question','$title')";
-                                            
-            if ($ntu_survey->query($sql) === TRUE) { 
+            if ($ntu_survey->query($sql) === TRUE) {
                 
                 foreach($choices as $ch => $value ){
-                $sql1 = "INSERT into choice (c_text, q_Number, surveyTitle) VALUES ('$value','$num','$title')";
-                if ($ntu_survey->query($sql1) === TRUE) {
-                } else {
-                    echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
-                }
+                    
+                    if($value != ''){
+                        $query="SELECT questionId from question where questionNo='$questionNo'";
+                        $result = mysqli_query($ntu_survey, $query) or die($ntu_survey->error);;
+                        $row = $result->fetch_assoc();
+                        $questionId = $row["questionId"];
+                        
+                        $sql1 = "INSERT into choice (choiceDescription, questionId) VALUES ('$value','$questionId')";
+                    
+                        if ($ntu_survey->query($sql1) === TRUE) {
+                        } else {
+                            echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
+                        }
+                        
+                    }
+                    
+                
                                                                                                                                   
             }
                 $msg = "Question has been added successfully!";  
@@ -188,13 +207,28 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="../landing/index.php" name="Logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                    <?php
-                        if(isset($_POST['Logout'])) {
-                            $_SESSION['loggedin'] = false;
-                                    
-                        } 
-                    ?>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i><b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="../landing/index.php" name="Logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                            <?php
+                                if(isset($_POST['Logout'])) {
+                                    $_SESSION['loggedin'] = false;
+                                    echo "<script> window.location.href='../index.php' </script>";
+                                } 
+                             ?>
+                        </li>
+                    </ul>
                 </li>
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
@@ -229,7 +263,7 @@
                         </h1>
                         <ol class="breadcrumb">
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="index.php"> Create a Survey!</a>
+                                <i class="fa fa-dashboard"></i>  <a href="index.html"> Create a Survey!</a>
                             </li>
                             <li class="active">
                                 <i class="fa fa-edit"></i> Create a Question!
@@ -252,8 +286,10 @@
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label><h4>Question Number</h4></label>
-                                            <input type="text" class="form-control" name="num" placeholder="Enter number" required>
+                                            <label >Question Number</label>
+                                            <input type="text" class="form-control" name="questionNo" placeholder="Enter number" required>
+                                            <input type="hidden" name="surveyId">
+                                            <input type="hidden" name="questionId">
                                         </div>
                                     </div>
                                 </div>
@@ -261,15 +297,15 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label ><h4>Question</h4></label>
-                                            <input type="text" class="form-control" name="question" placeholder="Enter your Question"required>
+                                            <label >Question</label>
+                                            <input type="text" class="form-control" name="questionDescription" placeholder="Enter your Question"required>
                                         </div>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <strong><h4>Enter the Choices</h4></strong>
+                                        <strong><p>Enter the Choices</p></strong>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -290,7 +326,7 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="c3" placeholder="Enter a Choice"required>
+                                            <input type="text" class="form-control" name="c3" placeholder="Enter a Choice">
                                         </div>
                                     </div>
                                 </div>
@@ -298,25 +334,30 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="c4" placeholder="Enter a Choice"required>
+                                            <input type="text" class="form-control" name="c4" placeholder="Enter a Choice">
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="c5" placeholder="Enter a Choice">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
                                 
                                 
                                 <div class ="row">
                 
                                     <div class="col-lg-2">
                                         <button type="submit" class="btn btn-default" name="questionAdd">Add Question </button>
-                                    
                                     </div>
                                     <div class="col-lg-2">
-                                        
-                                        <a href="../admin/survey.php" class="btn btn-default" role="button">Submit</a>
-                                    
+                                        <button type="submit" class="btn btn-default" name="surveySubmit"><a href="survey.php">Submit Survey</a></button>
                                     </div>
-                                    
-                                    
                                 </div>  
                         
                             </div>

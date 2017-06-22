@@ -15,21 +15,29 @@
         }
     ?>
 <?php
-    if(isset($_POST["addQuestion"])) {      
-        $title = $_POST["title"];
+    if(isset($_POST["addQuestion"])) { 
+        $email = $_SESSION['username'];
+        $query="SELECT userId from user where email='$email'";
+        $result = mysqli_query($ntu_survey, $query);
+        $row = $result->fetch_assoc();
+        $userId = $row["userId"];
+        $null = null;
+        
+        
+        $surveyTitle = $_POST["title"];
         $user = $_POST["opt"];
         
-        $username = $_SESSION['username'];
         
         
-        $result = mysqli_query($ntu_survey, "SELECT * FROM survey WHERE title = '$title'");
+        
+        $result = mysqli_query($ntu_survey, "SELECT * FROM survey WHERE surveyTitle = '$surveyTitle'");
         if(mysqli_num_rows($result) > 0) {
             $eMsg = "Title is already taken!";                                     
             mysqli_free_result($result);
         } else {
-            $sql = "INSERT INTO survey (title, userRequired, dateCreated, author) VALUES ('$title','$user',now(),'$username')";                        
+            $sql = "INSERT INTO survey (surveyTitle, userRequired, dateCreated,author) VALUES ('$surveyTitle','$user',now(), '$userId')";                        
             if ($ntu_survey->query($sql) === TRUE){ 
-                $_SESSION['title'] = $title;  
+                $_SESSION['surveyTitle'] = $surveyTitle;  
                 header("Location: ../admin/question.php");
             } else {
                 echo "Error: " . $sql . "<br>" . $ntu_survey->error;

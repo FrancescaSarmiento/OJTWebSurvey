@@ -6749,9 +6749,13 @@ button.close {
     display: inline-block !important;
   }
 }
-@media print {
+@media print {.logo
   .hidden-print {
     display: none !important;
   }
+}
+.logo-mini{
+    height:1%;
+    width: 1%;
 }
 /*# sourceMappingURL=bootstrap.css.map */

@@ -215,7 +215,7 @@
                                 $title= $_POST["title"];
                                 $optU= $_POST["optU"];
 
-                                $r = mysqli_query($ntu_survey, "SELECT * FROM survey WHERE title = '$title'");
+                                $r = mysqli_query($ntu_survey, "SELECT * FROM survey WHERE surveyTitle = '$title'");
                                     if(mysqli_num_rows($r) > 0)  {
                                            echo "<div class='err' font-color = 'red'>Survey title is already taken!</div>";         
                                             mysqli_free_result($r);
