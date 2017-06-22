@@ -12,7 +12,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HOME  | NTU SURVEY</title>
+    <title>HOME  | NTU </title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -62,7 +62,10 @@
                         <a href="#contact">Credits</a>
                     </li>
                     <li>
-                        <a href="../registration/index.php">Sign Up</a>
+                        <a href="../registration/index.php">Sign-Up</a>
+                    </li>
+                    <li>
+                        <a href="../login/index.php">Log-In</a>
                     </li>
                 </ul>
             </div>
@@ -83,7 +86,7 @@
                     <div class="intro-message">
                         <img src="img/ntulogo.png" class="logo">
                         <h1>Noble Trends Unbound</h1>
-                        <h3>Welcome! To Local Surveyor for your needs. Get Started!</h3>
+                        <h3>Welcome! This is your local Surveyor for your needs. Get Started!</h3>
                         
                         <hr class="intro-divider">
                         <ul class="list-inline intro-social-buttons">

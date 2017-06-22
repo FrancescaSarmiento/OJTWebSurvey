@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `ntu_survey` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `ntu_survey`;
 -- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
 -- Host: localhost    Database: ntu_survey
@@ -18,6 +16,31 @@ USE `ntu_survey`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `choice`
+--
+
+DROP TABLE IF EXISTS `choice`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `choice` (
+  `questionId` int(11) NOT NULL,
+  `choiceId` int(11) NOT NULL,
+  `choiceDescription` varchar(45) NOT NULL,
+  PRIMARY KEY (`choiceId`),
+  KEY `questionId_idx` (`questionId`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `choice`
+--
+
+LOCK TABLES `choice` WRITE;
+/*!40000 ALTER TABLE `choice` DISABLE KEYS */;
+/*!40000 ALTER TABLE `choice` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `question`
 --
 
@@ -25,12 +48,14 @@ DROP TABLE IF EXISTS `question`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `question` (
-  `q_id` varchar(45) NOT NULL,
-  `questionNo` int(11) NOT NULL,
-  `textQuestion` varchar(45) NOT NULL,
-  `s_id` int(11) NOT NULL,
-  PRIMARY KEY (`q_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `questionId` int(11) NOT NULL AUTO_INCREMENT,
+  `questionNo` varchar(45) NOT NULL,
+  `questionDescription` varchar(45) NOT NULL,
+  `surveyId` int(11) NOT NULL,
+  PRIMARY KEY (`questionId`,`questionNo`),
+  KEY `surveyId_idx` (`surveyId`),
+  CONSTRAINT `surveyId` FOREIGN KEY (`surveyId`) REFERENCES `survey` (`surveyId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,6 +64,7 @@ CREATE TABLE `question` (
 
 LOCK TABLES `question` WRITE;
 /*!40000 ALTER TABLE `question` DISABLE KEYS */;
+INSERT INTO `question` VALUES (1,'7','Quest7',11),(2,'12','Ballalalalalala',17),(3,'12','Ballalalalalala',17);
 /*!40000 ALTER TABLE `question` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -50,13 +76,12 @@ DROP TABLE IF EXISTS `response`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `response` (
-  `r_id` int(11) NOT NULL,
-  `ans` varchar(45) NOT NULL,
-  `q_id` varchar(45) NOT NULL,
-  `u_id` varchar(45) NOT NULL,
-  `s_id` varchar(45) NOT NULL,
-  PRIMARY KEY (`r_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `responseId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `surveyId` int(11) NOT NULL,
+  `userResponse` tinytext,
+  PRIMARY KEY (`responseId`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,11 +101,13 @@ DROP TABLE IF EXISTS `survey`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `survey` (
-  `idsurvey` int(11) NOT NULL,
-  `title` varchar(45) NOT NULL,
-  `user required` enum('yes','no') NOT NULL,
-  PRIMARY KEY (`idsurvey`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `surveyId` int(11) NOT NULL AUTO_INCREMENT,
+  `surveyTitle` varchar(45) NOT NULL,
+  `userRequired` varchar(5) NOT NULL,
+  `dateCreated` date NOT NULL,
+  PRIMARY KEY (`surveyId`),
+  UNIQUE KEY `surveyId_UNIQUE` (`surveyId`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,6 +116,7 @@ CREATE TABLE `survey` (
 
 LOCK TABLES `survey` WRITE;
 /*!40000 ALTER TABLE `survey` DISABLE KEYS */;
+INSERT INTO `survey` VALUES (1,'Something','Yes','2017-06-21'),(2,'Sample','Yes','2017-06-21'),(3,'CHIIIIIIII','Yes','2017-06-21'),(4,'Test','Yes','2017-06-21'),(5,'Teststetaasd','Yes','2017-06-21'),(6,'Sample4','Yes','2017-06-21'),(7,'Sample5','Yes','2017-06-21'),(8,'Sample6','Yes','2017-06-21'),(9,'Sample7','Yes','2017-06-21'),(10,'Sample8','Yes','2017-06-21'),(11,'Test231','Yes','2017-06-21'),(12,'Sample45GumanaKaNaPLS','Yes','2017-06-21'),(13,'Pls','Yes','2017-06-21'),(14,'plspls','Yes','2017-06-21'),(15,'migichi','Yes','2017-06-21'),(16,'TestSomething','Yes','2017-06-21'),(17,'Testtesttest','Yes','2017-06-22');
 /*!40000 ALTER TABLE `survey` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -100,18 +128,19 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
-  `iduser` varchar(45) NOT NULL,
-  `lastname` varchar(45) NOT NULL,
-  `firstname` varchar(45) NOT NULL,
-  `email` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `type` varchar(45) NOT NULL,
+  `firstName` varchar(45) NOT NULL,
+  `lastName` varchar(45) NOT NULL,
   `department` varchar(45) NOT NULL,
   `team` varchar(45) NOT NULL,
-  `type` varchar(45) NOT NULL DEFAULT 'respondent',
-  `status` varchar(45) NOT NULL DEFAULT 'not active',
-  PRIMARY KEY (`iduser`),
-  UNIQUE KEY `iduser_UNIQUE` (`iduser`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `email` varchar(45) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  `status` binary(1) DEFAULT NULL,
+  PRIMARY KEY (`userId`),
+  UNIQUE KEY `userid_UNIQUE` (`userId`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,7 +149,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('1234','sam','paul','ps@gmail.com','1234','','','','');
+INSERT INTO `user` VALUES (1,'admin','Some','Body','IT','a','admin@gmail.com','admin',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -133,4 +162,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-06-14  9:24:22
+-- Dump completed on 2017-06-22  0:14:09

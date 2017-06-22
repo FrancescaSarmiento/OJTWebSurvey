@@ -1,42 +1,6 @@
 <?php
     session_start();
-
-    if ($_SESSION['loggedin'] == false ) {
-    header('Location: ../login/index.php');
-    }
 ?>
-
- <?php
-
-        $ntu_survey = new mysqli("localhost", "root", "", "ntu_survey");
-        // Check connection
-        if ($ntu_survey->connect_error) {
-            die("Connection failed: " . $ntu_survey->connect_error);
-        }
-    ?>
-<?php
-    if(isset($_POST["addQuestion"])) {      
-        $surveyTitle = $_POST["surveyTitle"];
-        $user = $_POST["opt"];
-                           
-        
-        $result = mysqli_query($ntu_survey, "SELECT * FROM survey WHERE surveyTitle = '$surveyTitle'");
-        if(mysqli_num_rows($result) > 0) {
-            echo "<div class='err'>Title is already taken!</div>";                                       
-            mysqli_free_result($result);
-        } else {
-            $sql = "INSERT INTO survey (surveyTitle, userRequired, dateCreated) VALUES ('$surveyTitle','$user',now())";                        
-            if ($ntu_survey->query($sql) === TRUE){ 
-                $_SESSION['surveyTitle'] = $surveyTitle;  
-                header("Location: ../admin/question.php");
-            } else {
-                echo "Error: " . $sql . "<br>" . $ntu_survey->error;
-            }
-        }
-    }
-                                 
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -55,6 +19,8 @@
 
     <!-- Custom CSS -->
     <link href="css/sb-admin.css" rel="stylesheet">
+    
+    <link href="css/style.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -69,7 +35,14 @@
 </head>
 
 <body>
-   
+    <?php
+
+        $ntu_survey = new mysqli("localhost", "root", "", "ntu_survey");
+        // Check connection
+        if ($ntu_survey->connect_error) {
+            die("Connection failed: " . $ntu_survey->connect_error);
+        }
+    ?>
 
     <div id="wrapper">
 
@@ -181,13 +154,7 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="../landing/index.php" name="Logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                            <?php
-                                if(isset($_POST['Logout'])) {
-                                    $_SESSION['loggedin'] = false;
-                                    echo "<script> window.location.href='../index.php' </script>";
-                                } 
-                             ?>
+                            <a href="#"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                         </li>
                     </ul>
                 </li>
@@ -219,56 +186,71 @@
                 <!-- Page Heading -->
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">
+                        <h1 class="page-header head">
                             Create a Survey!
                         </h1>
                         <ol class="breadcrumb">
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
+                                <i class="fa fa-dashboard"></i>  <a href="index.php">Dashboard</a>
                             </li>
                             <li class="active">
-                                <i class="fa fa-edit"></i> Create a Survey!
+                                <i class="fa fa-edit"></i> Step 1
                             </li>
                         </ol>
                     </div>
                 </div>
                 <!-- /.row -->
-            
-            
+
                 <div class="row">
                     <div class="col-lg-6">
-                       <form role="form" method="POST" action="create.php">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label >Survey Title</label>
-                                            <input type="text" class="form-control" name="surveyTitle" required>
-                                        </div>
-                                    </div>
+                        <?php
+                
+                            $ntu_survey = new mysqli("localhost", "root", "", "ntu_survey");
+                            // Check connection
+                            if ($ntu_survey->connect_error) {
+                                die("Connection failed: " . $ntu_survey->connect_error);
+                            }
+
+                            if(isset($_POST["newForm"])) {        
+                                $title= $_POST["title"];
+                                $optU= $_POST["optU"];
+
+                                $r = mysqli_query($ntu_survey, "SELECT * FROM survey WHERE title = '$title'");
+                                    if(mysqli_num_rows($r) > 0)  {
+                                           echo "<div class='err' font-color = 'red'>Survey title is already taken!</div>";         
+                                            mysqli_free_result($r);
+                                    } else {
+                                        $sql = "INSERT INTO survey (title, userRequired) VALUES ('$title','$optU' ,now())";
+                                        if ($ntu_survey->query($sql) === TRUE) {
+                                           header("Location:../admin/question.php");
+                                        } else {
+                                                echo "Error: " . $sql . "<br>" . $ntu_survey->error;
+                                        }
+                                    }
+                            }
+
+                        ?>
+
+                        <form role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+                            <fieldset>
+                                <div class="form-group">
+                                    <label>Survey Title</label>
+                                    <input class="form-control" placeholder="Enter text" name='title' required>
                                 </div>
                                 
-                                <div class ="row">
-                                    <div class="col-lg-2">
-                                        <div class="form-group">
-                                            <label >User Required</label>
-                                            <select class="form-control" name="opt">
-                                                <option>Yes</option>
-                                                <option>No</option>
-                                            </select>
-                                        </div>
-                                     </div>
+                                <div class="form-group">
+                                    <label for="sel1">User Required</label>
+                                    <select class="form-control" id="sel1" name="optU">
+                                        <option>Yes</option>
+                                        <option>No</option>
+
+                                    </select>
                                 </div>
                                 
-                                <div class ="row">
-                                    
-                                    <div class="col-lg-2">
-                                        <button type="submit" class="btn btn-default" name="addQuestion">Next Step </button>
-                                    
-                                    </div>
-                                </div>  
-                        
-                            </div>
+                            </fieldset>
+
+                            <button type="submit" class="btn btn-default" name="newForm"><strong>Next</strong></button>
+                            
 
                         </form>
 
@@ -290,27 +272,6 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-    
-    <script type="text/javascript">
-
-        $(document).ready(function() {
-
-            $(".add-more").click(function(){ 
-                var html = $(".copy").html();
-                $(".after-add-more").after(html);
-            });
-            
-
-            $("body").on("click",".remove",function(){ 
-                $(this).parents(".control-group").remove();
-            });
-
-        });
-
-    </script>
-    
-    
-    
 
 </body>
 

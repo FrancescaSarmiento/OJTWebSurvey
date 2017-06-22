@@ -7,7 +7,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title> Log in now! | NTU </title>
+        <title> Log in now! | NTU Survey </title>
         <link href="style.css" type="text/css" rel="stylesheet" > 
         
     </head>
@@ -22,7 +22,8 @@
             die("Connection failed: " . $ntu_survey->connect_error);
         }
     ?>
-    <div class = "container">
+    <a href="../landing/index.php"><button type="button" class="cancelbtn"><strong>BACK</strong></button></a>
+    <div class="container">
         <div class = "loginForm"> 
             <?php
                 $err = '';
@@ -31,10 +32,11 @@
                 $username = $_POST["uname"];
                 $password = $_POST["psw"];
 
-                $resultR = mysqli_query($ntu_survey, "SELECT * FROM user WHERE email = '$username' AND password = '$password'");
-                $resultA = mysqli_query($ntu_survey, "SELECT * FROM user WHERE email = '$username' AND password = '$password' ");
+                $resultR = mysqli_query($ntu_survey, "SELECT * FROM user WHERE email = '$username' AND password = '$password' AND type ='respondent'" );
+                $resultA = mysqli_query($ntu_survey, "SELECT * FROM user WHERE email = '$username' AND password = '$password' AND type ='admin' ");
                                         
                     if(mysqli_num_rows($resultR) > 0) {
+                    
                     $_SESSION['loggedin'] = true;
                     $_SESSION['username'] = $email;
 
@@ -46,7 +48,7 @@
                     header("Location: ../admin/index.php"); 
 
                     }else {
-                        echo "<div class='err'> Incorrect email or password! </div>";
+                        echo "<div class='err' id='error'> Incorrect Credentials! Please try again. </div>";
                         mysqli_free_result($resultR);
                         mysqli_free_result($resultA);
                     }
@@ -64,10 +66,10 @@
                      <br>
                      <br>
                      
-                     <div class="btn">
-                         <a href="../landing/index.php"><button type="button" class="cancelbtn">Cancel</button></a>
-                         <button type="submit" class="submitbtn" name="login"><strong>LOGIN</strong></button>
-                     </div>     
+                     <button type="submit" class="submitbtn" name="login"><strong>LOGIN</strong></button>
+                     <hr>
+
+                     <a href="../registration/index.php"><button type="button" class="btn"><strong>Create an account!</strong></button></a>
                                            
                 </div>
 

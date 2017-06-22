@@ -1,27 +1,24 @@
 body {    
     padding-top: 0;
+    font-family: Myriad;
+    overflow-x: hidden;
     background-image: url(../landing/img/intro-bg.jpg);
-    background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+@font-face{
+    font-family: Myriad;
+    src: url(MyriadPro-Regular.otf);
 }
 
 form{
     margin: auto;
     position:absolute;
     margin-left: 35%;
-    
-    
-}
-
-@font-face{
-    font-family: Custom;
-    src: url(MyriadPro-Regular.otf);
-}
-
-label{
-    font-family: Custom;
-    
+    font-family: Myriad;
+    padding-top: 3%;
+    padding-left: 3%;
 }
 
 fieldset {
@@ -33,9 +30,9 @@ fieldset {
     width: 35%;
     padding: 2%;
     padding-left: 3%;
-    padding-bottom: 1%;
-    background-color: aliceblue ;
-  
+    padding-top: 3%;
+    padding-bottom: 2%;
+    background-color: whitesmoke;
     
 }
 
@@ -65,37 +62,29 @@ button:hover {
     opacity: 0.8;
 }
 
-/* Extra style for the cancel button (red) */
-.cancelbtn {
-    width: auto;
-    padding: 5% ,6%;
-    background-color: #f44336;
-    margin-left:10%; 
-}
+
 .submitbtn {
     width: 100%;
     padding: 5% ,6%;
     background-color: limegreen;
-    
+    letter-spacing: 1px;
 }
 .btn{
     width: 100%;
     padding: 5% ,6%;
     background-color: darkred;
+    letter-spacing: 1px;
 }
 .backbtn{
-    height: 5%;
-    width: 4%;
+    height: auto;
+    width: 7%;
     padding: 1%;
-    background-color: deepskyblue;
-    color: white;
+    background-color: dodgerblue;
 }
 
 .container{
-    padding-top:5%;
-    padding-left: 4%;
+    padding-top:2%;
 }
-
 
 
 

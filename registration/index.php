@@ -27,7 +27,7 @@
         }
     ?>
     <div id = "top">
-         <a href="../landing/index.php"><button type="button" class="backbtn"><strong> BACK</strong></button></a>
+         <a href="../landing/index.php"><button type="button" class="backbtn"><strong>BACK</strong></button></a>
     </div>
     <div class="container">
         <form role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
@@ -51,8 +51,7 @@
                             if(mysqli_num_rows($result) > 0) {
                                    echo "<div class='err'>Account already exists!</div>";                                        mysqli_free_result($result);
                             } else {
-                                $sql = "INSERT INTO user (iduser, lastname, firstname, email, password, department, team) 
-                                                        VALUES ('$empnumber','$lname', '$fname', '$email', md5('$password'), '$dept', '$team')";
+                                $sql = "INSERT INTO user (iduser, lastname, firstname, email, password, department, team) VALUES ('$empnumber','$lname', '$fname', '$email', '$password', '$dept', '$team')";
                                 if ($ntu_survey->query($sql) === TRUE) {
                                         header("Location: ../login/index.php");
                                 } else {
@@ -84,10 +83,9 @@
                 <label><b>Team</b></label>
                 <input type="text" placeholder="Enter your Team" name="team" required>
                     
-                <button type="submit" class="submitbtn" name="register" ><strong>SIGN UP!</strong></button>
+                <button type="submit" class="submitbtn" name="register" ><strong>SIGN UP</strong></button>
                 <hr>
-                <a href="../login/index.php"><button type="button" class="btn">Already have an account?</button></a>
-                <br><br>
+                <a href="../login/index.php"><button type="button" class="btn"><strong>Already have an account?</strong></button></a>
                     
                     
             </fieldset>

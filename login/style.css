@@ -1,14 +1,19 @@
+body {
+    padding-top: 0;
+    font-family: Myriad;
+    background-image: url(../landing/img/intro-bg.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    overflow-x: hidden;
+}
+
 @font-face{
-    font-family: Custom;
+    font-family: Myriad;
     src: url(MyriadPro-Regular.otf);
 }
 
-body {
-    padding-top: 0;
-    background-image: url(../landing/img/intro-bg.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
-    overflow-x: hidden;
+label{
+    font-family: Myriad;
 }
 
 /* Bordered form */
@@ -18,38 +23,35 @@ form {
     display: inline-block;
     border: 3px  #f1f1f1;
     border-style:groove;
-    height: 160%; !important
-    width: 25%;
+    height: 50%;
+    width: 35%;
     padding: 4%;
+  
+    
 }
-
-label{
-    font-family: Custom;
-}
-
 
 /* Full-width inputs */
 input[type=text], input[type=password] {
     width: 100%;
-    padding: 10px 15px;
+    padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
     border: 1px solid #ccc;
     box-sizing: border-box;
 }
 
+#error{
+    color: white;
+}
 
 /* Set a style for all buttons */
 button {
     background-color: #4CAF50;
-    color: white;
     padding: 14px 20px;
     margin: auto;
     border: none;
     cursor: pointer;
-    width: 100%;
     text-align: center;
-    
 }
 
 /* Add a hover effect for buttons */
@@ -59,27 +61,36 @@ button:hover {
 
 /* Extra style for the cancel button (red) */
 .cancelbtn {
-    width: auto;
-    padding: 9px 9px;
-    background-color: #f44336;
+    height: auto;
+    width: 7%;
+    padding: 1%;
+    background-color: dodgerblue;
+    color: white;
+    
 }
 .submitbtn {
-    width: auto;
-    padding: 9px 9px;
-    background-color: deepskyblue;
-    margin-left: 45%;
+    width: 100%;
+    padding: 5%;
+    background-color: limegreen;
+    letter-spacing: 1px;
+    color: whitesmoke;
+    
 }
-
 
 .loginForm{
     position: absolute;
-    margin-top: 15%;
-    margin-left:39%;
-    width: 70%;
+    margin-top: 8%;
+    margin-left: 35%;
+    width: 60%;
 }
 .btn{
-    padding: 1%;
+    padding-top: 0;
+    padding: 3%;
+    width: 100%;
     margin-bottom: 0;
+    background-color: darkred;
+    color: white;
+    letter-spacing: 1px;
 }
 
     
