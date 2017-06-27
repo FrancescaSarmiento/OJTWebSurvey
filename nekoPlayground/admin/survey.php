@@ -60,6 +60,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                <a href="../admin/index.php"><img src="../landing/img/lg.png" class="navbar-brand"></a>
                 <a class="navbar-brand" href="../admin/index.php">NTU Admin</a>
             </div>
             <!-- Top Menu Items -->
@@ -161,12 +162,12 @@
                         <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
                     <li>
-                        <a href="respondents.php"><i class="fa fa-fw fa-bar-chart-o"></i> Respondents</a>
-                    </li>
-                    <li>
-                        <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
+                        <a href="manage.php"><i class="fa fa-fw fa-user"></i>Manage Account</a>
                     </li>
                     <li class="active">
+                        <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
+                    </li>
+                    <li >
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
                 </ul>
@@ -198,13 +199,75 @@
                 
                 <!-- /.row -->
                 <br>
-                <div class="row">
-                    
-                            
+                <div class="row">                    
                     <div class="col-lg-12">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-striped">
-                              
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 20%;" >Survey Title</th>
+                                        <th class="text-center" style="width: 18%;" >Author</th>
+                                        <th class="text-center" style="width: 12%;">Number of Responses</th>
+                                        <th class="text-center" style="width: 15%;">Analyze Result</th>
+                                        <th class="text-center" style="width: 11%;">Status</th>
+                                        <th class="text-center" style="width: 5%;">Delete</th>
+                                        <th class="text-center" style="width: 5%;">Edit</th>
+                                        
+                                    </tr>
+                                </thead>
+                                 <?php
+                                   
+                                    $survey="SELECT survey.surveyTitle, CONCAT(firstname,' ',lastname),  ifnull(COUNT(response.surveyId),0), survey.surveyId, survey.status FROM user RIGHT JOIN survey on author = userId LEFT JOIN response using(surveyId) GROUP BY survey.surveyTitle, survey.author, survey.surveyId, survey.status ORDER BY survey.surveyId DESC" ;
+                                    
+                                    
+                                    
+                                    
+                                    if ($result=mysqli_query($ntu_survey, $survey)) {
+                                        if(mysqli_num_rows($result) > 0) {
+                                            while ($row=mysqli_fetch_row($result)) {
+                                                echo "<tr>";
+                                                echo "<td class='text-center'> $row[0] </td>";
+                                                echo "<td class='text-center'> $row[1] </td>";
+                                                echo "<td class='text-center'>$row[2] </td>";
+                                                echo "<td class='text-center'><form action='survey.php' method='POST'><a href='analyze.php' class='btn btn-default' role='button' name='analyze'><i class='fa fa-bar-chart' aria-hidden='true'></i></a></form></td>";
+                                                echo "<td class='text-center'>$row[4]</td>";
+                                                echo "<td class='text-center'>
+                                                        <div class='btn-group'>
+                                                           <form action='survey.php' method='POST'>
+                                                           
+                                                                <input type='hidden' name='sId' value='$row[3]'>
+                                                               
+                                                               <button type='submit' class='btn btn-default' name='del'><i class='fa fa-trash-o' aria-hidden='true'></i></button>
+                                                                 
+                                                               
+                                                            </form> 
+                                                                
+                                                        </div>      
+                                                    </td>";
+                                                echo "<td class='text-center'>
+                                                            <form action='survey.php' method='POST'>
+                                                                 
+                                                                 <a href='editSurvey.php?survey=$row[3]'><button type='button' class='btn btn-default' name='edit'><i class='fa fa-pencil' aria-hidden='true'></i></button></a>
+                                                            </form>
+                                                      </td>";
+                                                echo "</tr>";
+                                                
+                                               
+
+                                            }
+                                        }
+                                        if (isset($_POST['del'])) {
+                                            $id = $_POST['sId'];
+                                            $result = mysqli_query($ntu_survey,"DELETE FROM survey WHERE surveyId='$id'") or die(mysqli_error());
+                                            
+                                        
+                            
+                                        }
+                                    }
+                                     
+                        
+                                ?>   
+                                
                             </table>
                         </div>
                     </div>

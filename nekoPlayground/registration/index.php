@@ -51,7 +51,7 @@
                             if(mysqli_num_rows($result) > 0) {
                                    echo "<div class='err'>Account already exists!</div>";                                        mysqli_free_result($result);
                             } else {
-                                $sql = "INSERT INTO user (iduser, lastname, firstname, email, password, department, team) VALUES ('$empnumber','$lname', '$fname', '$email', '$password', '$dept', '$team')";
+                                $sql = "INSERT INTO user (empNum, lastname, firstname, email, password, department, team) VALUES ('$empnumber','$lname', '$fname', '$email', '$password', '$dept', '$team')";
                                 if ($ntu_survey->query($sql) === TRUE) {
                                         header("Location: ../login/index.php");
                                 } else {
@@ -80,7 +80,7 @@
                 <label><b>Department</b></label>
                 <input type="text" placeholder="Enter your Department" name="dept" required>
                     
-                <label><b>Team</b></label>
+                <label><b>Team</b></label><sup><small>note:leave it blank if you don't belong to any team.</small></sup>
                 <input type="text" placeholder="Enter your Team" name="team" required>
                     
                 <button type="submit" class="submitbtn" name="register" ><strong>SIGN UP</strong></button>

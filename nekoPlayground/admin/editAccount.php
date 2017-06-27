@@ -1,12 +1,10 @@
 <?php
     session_start();
-
     if ($_SESSION['loggedin'] == false ) {
     header('Location: ../login/index.php');
-    }
+    } 
 ?>
-
- <?php
+<?php
 
         $ntu_survey = new mysqli("localhost", "root", "", "ntu_survey");
         // Check connection
@@ -14,38 +12,6 @@
             die("Connection failed: " . $ntu_survey->connect_error);
         }
     ?>
-<?php
-    if(isset($_POST["addQuestion"])) { 
-        $email = $_SESSION['username'];
-        $query="SELECT userId from user where email='$email'";
-        $result = mysqli_query($ntu_survey, $query);
-        $row = $result->fetch_assoc();
-        $userId = $row["userId"];
-        
-        
-        $surveyTitle = $_POST["title"];
-        $user = $_POST["opt"];
-        
-        
-        
-        
-        $result = mysqli_query($ntu_survey, "SELECT * FROM survey WHERE surveyTitle = '$surveyTitle'");
-        if(mysqli_num_rows($result) > 0) {
-            $eMsg = "Title is already taken!";                                     
-            mysqli_free_result($result);
-        } else {
-            $sql = "INSERT INTO survey (surveyTitle, userRequired, dateCreated,author) VALUES ('$surveyTitle','$user',now(), '$userId')";                        
-            if ($ntu_survey->query($sql) === TRUE){ 
-                $_SESSION['surveyTitle'] = $surveyTitle;  
-                header("Location: ../admin/question.php");
-            } else {
-                echo "Error: " . $sql . "<br>" . $ntu_survey->error;
-            }
-        }
-    }
-                                 
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -65,6 +31,11 @@
     <!-- Custom CSS -->
     <link href="css/sb-admin.css" rel="stylesheet">
 
+    <!-- Morris Charts CSS -->
+    <link href="css/plugins/morris.css" rel="stylesheet">
+    
+    <link href="css/style.css" rel="stylesheet">
+
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
@@ -78,12 +49,9 @@
 </head>
 
 <body>
-   
 
     <div id="wrapper">
-
-        <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+       <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -190,16 +158,16 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                     <li>
+                    <li>
                         <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="manage.php"><i class="fa fa-fw fa-user"></i>Manage Account</a>
                     </li>
                     <li >
                         <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
                     </li>
-                    <li class="active">
+                    <li >
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
                 </ul>
@@ -207,6 +175,7 @@
             <!-- /.navbar-collapse -->
         </nav>
 
+        
         <div id="page-wrapper">
 
             <div class="container-fluid">
@@ -214,74 +183,154 @@
                 <!-- Page Heading -->
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">
-                            Create a Survey!
+                        <h1 class="page-header head">
+                            Manage Account
                         </h1>
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-dashboard"></i>  <a href="index.php">Dashboard</a>
                             </li>
                             <li class="active">
-                                <i class="fa fa-edit"></i> Create a Survey!
+                                <i class="fa fa-bar-chart-o"></i> Manage Account
                             </li>
                         </ol>
                     </div>
                 </div>
-                <!-- /.row -->
-            
-            
                 <div class="row">
-                    <div class="col-lg-6">
-                        <form role="form" method="POST" action="create.php">
-                            <fieldset>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label ><h3>Survey Title <sup>*</sup></h3></label>
-                                            <input type="text" class="form-control" name="title" required>
-                                            <?php 
-                                                if(isset($eMsg)){
-                                                    echo '<p>'.'<strong>'.$eMsg.'</strong>'.'</p>';
+                    <div class="col-lg-12">
+                        <?php
+                        
+                        $id='';
+                        $id = $_REQUEST['id']; 
+                        $query="SELECT userId from user where userId='$id'";
+                        $result = mysqli_query($ntu_survey, $query);
+                        $row = $result->fetch_assoc();
+                        $userId = $row["userId"];
+                    
+                        $user = "SELECT empNum, firstName, lastName, email, department, team, type FROM user WHERE userId='$id'";
+                        if ($result=mysqli_query($ntu_survey, $user)) {
+                            if(mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc ($result)) {
+                                    echo "<form action='editAccount.php' method='POST'>";
+                                        echo
+                                             "<div class='row'>
+                                                 <div class='form-group'>
+                                                    <div class='col-lg-6'>
+                                                        <label>Employee Number</label>
+                                                        <input type='text' class='form-control' name='empNum' value=".$row['empNum']." >
+                                                    </div>    
+                                                </div>
+                                            </div>";
+                                        echo "<br>";
+                                        echo
+                                             "<div class='row'>
+                                                 <div class='form-group'>
+                                                    <div class='col-lg-6'>
+                                                        <label>Lastname</label>
+                                                        <input type='text' class='form-control' value=".$row['lastName']." name='ln'>
+                                                    </div>    
+                                                </div>
+                                            </div>"; 
+                                        echo "<br>";
+                                        echo
+                                             "<div class='row'>
+                                                 <div class='form-group'>
+                                                    <div class='col-lg-6'>
+                                                        <label>Firstname</label>
+                                                        <input type='text' class='form-control' value=".$row['firstName']." name='fn'>
+                                                    </div>    
+                                                </div>
+                                            </div>";
+                                        echo "<br>";
+                                        echo
+                                             "<div class='row'>
+                                                 <div class='form-group'>
+                                                    <div class='col-lg-6'>
+                                                        <label>E-mail Address</label>
+                                                        <input type='text' class='form-control' value=".$row['email']." name='email'>
+                                                    </div>    
+                                                </div>
+                                            </div>";
+                                        echo "<br>";
+                                        echo
+                                             "<div class='row'>
+                                                 <div class='form-group'>
+                                                    <div class='col-lg-6'>
+                                                        <label>Department</label>
+                                                        <input type='text' class='form-control' value=".$row['department']." name='dept'>
+                                                    </div>    
+                                                </div>
+                                            </div>";
+                                        echo "<br>";
+                                        echo
+                                             "<div class='row'>
+                                                 <div class='form-group'>
+                                                    <div class='col-lg-6'>
+                                                        <label>Team</label>
+                                                        <input type='text' class='form-control' value=".$row['team']." name='team'>
+                                                    </div>    
+                                                </div>
+                                            </div>";
+                                        echo "<br>";
+                                        echo
+                                            "<div class='row'>
+                                                    <div class='form-group'>
+                                                        <div class='col-lg-6'>
+                                                            <label><strong>User Role: <strong> <em>".$row['type']."</em> </label>
+                                                            <div class'col-lg-4'>
+                                                                <select class='form-control' name='optR'>
+                                                                    <option>Admin</option>
+                                                                    <option>Respondent</option>
+                                                                </select>
+                                                            </div>
+                                                       </div>    
+                                                    </div>
+                                                 </div>";
+                                        echo "<br>";
+                                        echo 
+                                                "<div class='row'>
+                                                    <div class='btn-group'>
+                                                        <div class='col-lg-12'>
+                                                            <a href='manage.php'><button type='button' class='btn btn-default btn-lg'><strong>Cancel</strong></button></a>
+                                                             <button type='submit' name='submit' class='btn btn-default btn-lg'><strong>Submit</strong></button>
+                                                        </div>
+                                                    </div>
+                                                 </div>";    
+                                    echo "</form>";
 
-                                                }
-                                            ?>
-                                        </div>
-                                         
-                                    </div>
-                                </div>
-                                
-                                <div class ="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label ><h3>User Required</h3></label>
-                                            <select class="form-control" name="opt">
-                                                <option>Yes</option>
-                                                <option>No</option>
-                                            </select>
-                                        </div>
-                                     </div>
-                                </div>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <div class ="row">
-                                    
-                                    <div class="col-lg-4">
-                                        <button type="submit" class="btn btn-default" name="addQuestion">Next Step </button>
-                                    
-                                    </div>
-                                </div> 
-                            </fieldset>
-                            
-                        </form>
+                                    if(isset($_POST['submit'])){
 
+                                        $num = $_POST['empNum'];
+                                        $ln = $_POST['ln'];
+                                        $fn = $_POST['fn'];
+                                        $email = $_POST['email'];
+                                        $dept = $_POST['dept'];
+                                        $team = $_POST['team'];
+                                        $role = $_POST['optR'];
+
+                                        $sql = "UPDATE user SET empNum='$num',firstname='$fn', lastname='$ln', email='$email', department='$dept', team='$team', type='$role' WHERE userId = '$userId'";
+
+                                        if ($ntu_survey->query($sql) === TRUE) {
+                                            echo "Record updated successfully";
+                                        } else {
+                                            echo "Error updating record: " . $ntu_survey->error;
+                                        }
+
+                                        $ntu_survey->close();
+                                    }
+
+                                }
+                            }
+                        }
+                    
+                        
+                       
+                    ?>
                     </div>
+                   
                 </div>
-                <!-- /.row -->
-
-            </div>
+               
+             </div>
             <!-- /.container-fluid -->
 
         </div>
@@ -295,10 +344,6 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-    
-
-    
-    
 
 </body>
 

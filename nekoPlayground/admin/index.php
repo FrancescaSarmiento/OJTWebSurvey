@@ -62,6 +62,7 @@ if(mysqli_connect_errno()){
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                <a href="../admin/index.php"><img src="../landing/img/lg.png" class="navbar-brand"></a>
                 <a class="navbar-brand" href="../admin/index.php">NTU Admin</a>
             </div>
             <!-- Top Menu Items -->
@@ -163,12 +164,12 @@ if(mysqli_connect_errno()){
                         <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
                     <li>
-                        <a href="respondents.php"><i class="fa fa-fw fa-bar-chart-o"></i> Respondents</a>
+                        <a href="manage.php"><i class="fa fa-fw fa-user"></i>Manage Account</a>
                     </li>
-                    <li>
+                    <li >
                         <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
                     </li>
-                    <li>
+                    <li >
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
                 </ul>

@@ -47,6 +47,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                <a href="../landing/index.php"><img src="../landing/img/lg.png" class="navbar-brand topnav" alt="logo"></a>
                 <a class="navbar-brand topnav" href="../landing/index.php">NTU SURVEY</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -84,7 +85,7 @@
                 <div class="col-lg-12">
                     <a name="about"> </a>   
                     <div class="intro-message">
-                        <img src="img/ntulogo.png" class="logo">
+                        <img src="img/ntulogo.png" class="logo" />
                         <h1>Noble Trends Unbound</h1>
                         <h3>Local Surveyor for your needs. Get Started!</h3>
                         

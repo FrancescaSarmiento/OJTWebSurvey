@@ -1,12 +1,10 @@
 <?php
     session_start();
-
     if ($_SESSION['loggedin'] == false ) {
     header('Location: ../login/index.php');
-    }
+    } 
 ?>
-
- <?php
+<?php
 
         $ntu_survey = new mysqli("localhost", "root", "", "ntu_survey");
         // Check connection
@@ -14,38 +12,6 @@
             die("Connection failed: " . $ntu_survey->connect_error);
         }
     ?>
-<?php
-    if(isset($_POST["addQuestion"])) { 
-        $email = $_SESSION['username'];
-        $query="SELECT userId from user where email='$email'";
-        $result = mysqli_query($ntu_survey, $query);
-        $row = $result->fetch_assoc();
-        $userId = $row["userId"];
-        
-        
-        $surveyTitle = $_POST["title"];
-        $user = $_POST["opt"];
-        
-        
-        
-        
-        $result = mysqli_query($ntu_survey, "SELECT * FROM survey WHERE surveyTitle = '$surveyTitle'");
-        if(mysqli_num_rows($result) > 0) {
-            $eMsg = "Title is already taken!";                                     
-            mysqli_free_result($result);
-        } else {
-            $sql = "INSERT INTO survey (surveyTitle, userRequired, dateCreated,author) VALUES ('$surveyTitle','$user',now(), '$userId')";                        
-            if ($ntu_survey->query($sql) === TRUE){ 
-                $_SESSION['surveyTitle'] = $surveyTitle;  
-                header("Location: ../admin/question.php");
-            } else {
-                echo "Error: " . $sql . "<br>" . $ntu_survey->error;
-            }
-        }
-    }
-                                 
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -65,6 +31,11 @@
     <!-- Custom CSS -->
     <link href="css/sb-admin.css" rel="stylesheet">
 
+    <!-- Morris Charts CSS -->
+    <link href="css/plugins/morris.css" rel="stylesheet">
+    
+    <link href="css/style.css" rel="stylesheet">
+
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
@@ -78,12 +49,9 @@
 </head>
 
 <body>
-   
 
     <div id="wrapper">
-
-        <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+       <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -190,16 +158,16 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                     <li>
+                    <li>
                         <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="manage.php"><i class="fa fa-fw fa-user"></i>Manage Account</a>
                     </li>
                     <li >
                         <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
                     </li>
-                    <li class="active">
+                    <li >
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
                 </ul>
@@ -207,6 +175,7 @@
             <!-- /.navbar-collapse -->
         </nav>
 
+        
         <div id="page-wrapper">
 
             <div class="container-fluid">
@@ -214,73 +183,72 @@
                 <!-- Page Heading -->
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">
-                            Create a Survey!
+                        <h1 class="page-header head">
+                            Manage Account
                         </h1>
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-dashboard"></i>  <a href="index.php">Dashboard</a>
                             </li>
                             <li class="active">
-                                <i class="fa fa-edit"></i> Create a Survey!
+                                <i class="fa fa-bar-chart-o"></i> Manage Account
                             </li>
                         </ol>
                     </div>
                 </div>
-                <!-- /.row -->
-            
-            
+                
                 <div class="row">
-                    <div class="col-lg-6">
-                        <form role="form" method="POST" action="create.php">
-                            <fieldset>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label ><h3>Survey Title <sup>*</sup></h3></label>
-                                            <input type="text" class="form-control" name="title" required>
-                                            <?php 
-                                                if(isset($eMsg)){
-                                                    echo '<p>'.'<strong>'.$eMsg.'</strong>'.'</p>';
+                    <div class="col=lg-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 20%;" ><strong>Employee Number</strong></th>
+                                        <th class="text-center" style="width: 20%;" ><strong>Name</strong></th>
+                                        <th class="text-center" style="width: 20%;" ><strong>E-mail</strong></th>
+                                        <th class="text-center" style="width: 15%;" ><strong>Department</strong></th>
+                                        <th class="text-center" style="width: 10%;" ><strong>Team</strong></th>
+                                        <th class="text-center" style="width: 10%;" ><strong>Role</strong></th>
+                                        <th class="text-center" style="width: 10%;" ><strong></strong></th>
 
-                                                }
-                                            ?>
-                                        </div>
-                                         
-                                    </div>
-                                </div>
+
+                                    </tr>
+                                </thead>
                                 
-                                <div class ="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label ><h3>User Required</h3></label>
-                                            <select class="form-control" name="opt">
-                                                <option>Yes</option>
-                                                <option>No</option>
-                                            </select>
-                                        </div>
-                                     </div>
-                                </div>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <div class ="row">
-                                    
-                                    <div class="col-lg-4">
-                                        <button type="submit" class="btn btn-default" name="addQuestion">Next Step </button>
-                                    
-                                    </div>
-                                </div> 
-                            </fieldset>
-                            
-                        </form>
+                               
+                                    <?php
 
-                    </div>
+                                        $user="SELECT empNum, CONCAT(firstName, ' ', lastName)'name', email, department, team, type, userId FROM user ORDER BY name";
+
+                                        if ($result=mysqli_query($ntu_survey, $user)) {
+                                            if(mysqli_num_rows($result) > 0) {
+                                               while ($row=mysqli_fetch_assoc($result)) {
+                                                    echo "<tr>";
+                                                    echo "<td class='text-center'>".$row['empNum']."</td>";
+                                                    echo "<td class='text-center'>".$row['name']."</td>";
+                                                    echo "<td class='text-center'>".$row['email']."</td>";
+                                                    echo "<td class='text-center'>".$row['department']."</td>";
+                                                    echo "<td class='text-center'>".$row['team']."</td>";
+                                                    echo "<td class='text-center'>".$row['type']."</td>";
+                                                    echo "<td class='text-center'>
+                                                        <form action='manage.php' method='POST'>
+                                                            <a href='editAccount.php?id= ". $row['userId'] ."'><button type='button' class='btn btn-default' name='editA'><i class='fa fa-pencil' aria-hidden='true'></i></button></a>
+                                                        </form>
+                                                    </td>";
+                                                    
+                                                    echo "</tr>";
+                                                }
+                                            }
+                                        }
+                        
+                                    ?>
+                               
+                            </table>
+                        </div>
+                    </div>    
+                    
                 </div>
-                <!-- /.row -->
-
+                
             </div>
             <!-- /.container-fluid -->
 
@@ -295,10 +263,6 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-    
-
-    
-    
 
 </body>
 

@@ -1,12 +1,10 @@
 <?php
     session_start();
-
     if ($_SESSION['loggedin'] == false ) {
     header('Location: ../login/index.php');
-    }
+    } 
 ?>
-
- <?php
+<?php
 
         $ntu_survey = new mysqli("localhost", "root", "", "ntu_survey");
         // Check connection
@@ -14,38 +12,6 @@
             die("Connection failed: " . $ntu_survey->connect_error);
         }
     ?>
-<?php
-    if(isset($_POST["addQuestion"])) { 
-        $email = $_SESSION['username'];
-        $query="SELECT userId from user where email='$email'";
-        $result = mysqli_query($ntu_survey, $query);
-        $row = $result->fetch_assoc();
-        $userId = $row["userId"];
-        
-        
-        $surveyTitle = $_POST["title"];
-        $user = $_POST["opt"];
-        
-        
-        
-        
-        $result = mysqli_query($ntu_survey, "SELECT * FROM survey WHERE surveyTitle = '$surveyTitle'");
-        if(mysqli_num_rows($result) > 0) {
-            $eMsg = "Title is already taken!";                                     
-            mysqli_free_result($result);
-        } else {
-            $sql = "INSERT INTO survey (surveyTitle, userRequired, dateCreated,author) VALUES ('$surveyTitle','$user',now(), '$userId')";                        
-            if ($ntu_survey->query($sql) === TRUE){ 
-                $_SESSION['surveyTitle'] = $surveyTitle;  
-                header("Location: ../admin/question.php");
-            } else {
-                echo "Error: " . $sql . "<br>" . $ntu_survey->error;
-            }
-        }
-    }
-                                 
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -64,26 +30,28 @@
 
     <!-- Custom CSS -->
     <link href="css/sb-admin.css" rel="stylesheet">
+    
+    <link href="css/style.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
 </head>
 
 <body>
-   
+    <?php
+
+        $ntu_survey = new mysqli("localhost", "root", "", "ntu_survey");
+        // Check connection
+        if ($ntu_survey->connect_error) {
+            die("Connection failed: " . $ntu_survey->connect_error);
+        }
+    ?>
 
     <div id="wrapper">
 
         <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+       <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -190,22 +158,23 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                     <li>
+                    <li>
                         <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
                     <li>
                         <a href="manage.php"><i class="fa fa-fw fa-user"></i>Manage Account</a>
                     </li>
-                    <li >
+                    <li class="active">
                         <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
                     </li>
-                    <li class="active">
+                    <li >
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
         </nav>
+
 
         <div id="page-wrapper">
 
@@ -214,73 +183,100 @@
                 <!-- Page Heading -->
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">
-                            Create a Survey!
+                        <h1 class="page-header head">
+                            Edit Survey
                         </h1>
                         <ol class="breadcrumb">
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="index.php">Dashboard</a>
+                                <i class="fa fa-dashboard"></i>  <a href="survey.php">Surveys Made</a>
                             </li>
                             <li class="active">
-                                <i class="fa fa-edit"></i> Create a Survey!
+                                <i class="fa fa-table"></i> Edit Survey
                             </li>
                         </ol>
                     </div>
                 </div>
+                
                 <!-- /.row -->
-            
-            
+               
                 <div class="row">
-                    <div class="col-lg-6">
-                        <form role="form" method="POST" action="create.php">
-                            <fieldset>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label ><h3>Survey Title <sup>*</sup></h3></label>
-                                            <input type="text" class="form-control" name="title" required>
-                                            <?php 
-                                                if(isset($eMsg)){
-                                                    echo '<p>'.'<strong>'.$eMsg.'</strong>'.'</p>';
+                    <div class="col-lg-12">
+                        
+                             <?php 
+                                $s = $_GET['survey']; 
+                                $result = mysqli_query($ntu_survey,"SELECT surveyTitle, userRequired, status FROM survey WHERE surveyId='$s'") or die(mysqli_error());
+                                while ($row = mysqli_fetch_assoc ($result)) {
+                                    echo "<form action='editSurvey.php' method='POST'>";
+                                    echo
+                                         "<div class='row'>
+                                             <div class='form-group'>
+                                                <div class='col-lg-6'>
+                                                    <label>Survey Title</label>
+                                                    <input type='text' class='form-control' value=".$row['surveyTitle'].">
+                                                </div>    
+                                            </div>
+                                        </div>";
+                                     echo "<br>";
+                                     echo
+                                         "<div class='row'>
+                                            <div class='form-group'>
+                                                <div class='col-lg-6'>
+                                                    <label><strong>User Required: <strong> <em>".$row['userRequired']."</em> </label>
+                                                    <div class'col-lg-4'>
+                                                        <select class='form-control' name='optU'>
+                                                            <option>Yes</option>
+                                                            <option>No</option>
+                                                        </select>
+                                                    </div>
+                                                
+                                               
+                                               </div>    
+                                            </div>
+                                         </div>";
+                                     echo
+                                         "<div class='row'>
+                                            <div class='form-group'>
+                                                <div class='col-lg-6'>
+                                                    <label><strong>Survey Status: <strong> <em>".$row['status']."</em> </label>
+                                                    <div class'col-lg-4'>
+                                                        <select class='form-control' name='optS'>
+                                                            <option>Enable</option>
+                                                            <option>Disable</option>
+                                                        </select>
+                                                    </div>
+                                                
+                                               
+                                               </div>    
+                                            </div>
+                                         </div>";
+                                    echo "<br>";
+                                    echo 
+                                        "<div class='row'>
+                                            <div class='col-lg-6'>
+                                                <button type='button' class='btn btn-default' data-toggle='collapse' data-target='#quest'><strong><i class='fa fa-pencil' aria-hidden='true'></i>Edit Question</strong></button>
+                                                <div id='quest' class='collapse'>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>";
+                                    echo "<br>";
+                                    
+                                    echo 
+                                        "<div class='row'>
+                                            <div class='col-lg-6'>
+                                                <button type='submit' name='submit' class='btn btn-default'><strong>Submit</strong></button>
+                                            </div>
+                                         </div>";    
+                                    echo "</form>";
+                                }
+                                    
 
-                                                }
-                                            ?>
-                                        </div>
-                                         
-                                    </div>
-                                </div>
                                 
-                                <div class ="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label ><h3>User Required</h3></label>
-                                            <select class="form-control" name="opt">
-                                                <option>Yes</option>
-                                                <option>No</option>
-                                            </select>
-                                        </div>
-                                     </div>
-                                </div>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <div class ="row">
-                                    
-                                    <div class="col-lg-4">
-                                        <button type="submit" class="btn btn-default" name="addQuestion">Next Step </button>
-                                    
-                                    </div>
-                                </div> 
-                            </fieldset>
-                            
-                        </form>
 
+                            ?>
                     </div>
                 </div>
-                <!-- /.row -->
-
+                    
             </div>
             <!-- /.container-fluid -->
 
@@ -295,10 +291,6 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-    
-
-    
-    
 
 </body>
 

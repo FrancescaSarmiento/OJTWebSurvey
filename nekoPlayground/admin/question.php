@@ -40,17 +40,20 @@
             
             
             
+            
+            
             if ($ntu_survey->query($sql) === TRUE) {
+               
                 
                 foreach($choices as $ch => $value ){
                     
                     if($value != ''){
-                        $query="SELECT questionId from question where questionNo='$questionNo'";
+                        $query="SELECT questionId FROM question WHERE questionNo='$questionNo' ORDER BY questionId DESC";
                         $result = mysqli_query($ntu_survey, $query) or die($ntu_survey->error);;
                         $row = $result->fetch_assoc();
-                        $questionId = $row["questionId"];
+                        $qId = $row["questionId"];
                         
-                        $sql1 = "INSERT into choice (choiceDescription, questionId) VALUES ('$value','$questionId')";
+                        $sql1 = "INSERT into choice (choiceDescription, questionId) VALUES ('$value','$qId')";
                     
                         if ($ntu_survey->query($sql1) === TRUE) {
                         } else {
@@ -73,6 +76,7 @@
            
                                             
         }
+  
    
 ?>
                                     
@@ -122,6 +126,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                <a href="../admin/index.php"><img src="../landing/img/lg.png" class="navbar-brand"></a>
                 <a class="navbar-brand" href="../admin/index.php">NTU Admin</a>
             </div>
             <!-- Top Menu Items -->
@@ -238,9 +243,9 @@
                         <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
                     <li>
-                        <a href="respondents.php"><i class="fa fa-fw fa-bar-chart-o"></i> Respondents</a>
+                        <a href="manage.php"><i class="fa fa-fw fa-user"></i>Manage Account</a>
                     </li>
-                    <li>
+                    <li >
                         <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
                     </li>
                     <li class="active">
