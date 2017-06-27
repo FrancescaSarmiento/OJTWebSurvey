@@ -260,6 +260,8 @@
                                             $id = $_POST['sId'];
                                             $result = mysqli_query($ntu_survey,"DELETE FROM survey WHERE surveyId='$id'") or die(mysqli_error());
                                             
+                                           
+                                            
                                         
                             
                                         }
