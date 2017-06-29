@@ -1,5 +1,6 @@
 <?php
     session_start();
+    ob_start();
     if ($_SESSION['loggedin'] == false ) {
     header('Location: ../login/index.php');
     } 
@@ -56,6 +57,7 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                     <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -150,7 +152,7 @@
                     <?php
                         if(isset($_POST['Logout'])) {
                             $_SESSION['loggedin'] = false;
-                                    
+                            session_destroy();        
                         } 
                     ?>
                 </li>
@@ -169,6 +171,9 @@
                     </li>
                     <li >
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
+                    </li>
+                    <li >
+                        <a href="log.php"><i class="fa fa-fw fa-history"></i> Activity Log</a>
                     </li>
                 </ul>
             </div>
@@ -199,6 +204,7 @@
                 
                 <!-- /.row -->
                 <br>
+                
                 <div class="row">                    
                     <div class="col-lg-12">
                         <div class="table-responsive">
@@ -258,8 +264,37 @@
                                         }
                                         if (isset($_POST['del'])) {
                                             $id = $_POST['sId'];
-                                            $result = mysqli_query($ntu_survey,"DELETE FROM survey WHERE surveyId='$id'") or die(mysqli_error());
                                             
+                                            $date = date('Y-m-d H:i:s');
+                                            
+                                            $email = $_SESSION['username'];
+                                            $query="SELECT userId from user where email='$email'";
+                                            $result = mysqli_query($ntu_survey, $query);
+                                            $row = $result->fetch_assoc();
+                                            $adminId = $row["userId"];
+
+                                            $query="SELECT surveyTitle from survey where surveyId='$id'";   
+                                            $result = mysqli_query($ntu_survey, $query);
+                                            $row = $result->fetch_assoc();
+                                            $s = $row['surveyTitle'];
+                                            
+                                            $sql ="INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Delete Survey  " . $s . "', '$adminId')";
+
+                                            if ($ntu_survey->query($sql) === TRUE){ 
+                                                $result = mysqli_query($ntu_survey,"DELETE FROM survey WHERE surveyId='$id'") or die(mysqli_error());
+                                                header("Location: ../admin/survey.php");
+
+                                            } else {
+                                                echo "Error: " . $sql . "<br>" . $ntu_survey->error;
+                                            }
+                                            
+                                            $del ="DELETE FROM survey WHERE surveyId='$id'";
+                                            
+                                           
+                                            
+                                            
+                                            
+                                           
                                            
                                             
                                         

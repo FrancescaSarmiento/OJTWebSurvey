@@ -59,6 +59,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
                 <a href="../admin/index.php"><img src="../landing/img/lg.png" class="navbar-brand"></a>
                 <a class="navbar-brand" href="../admin/index.php">NTU Admin</a>
@@ -150,7 +151,7 @@
                     <?php
                         if(isset($_POST['Logout'])) {
                             $_SESSION['loggedin'] = false;
-                                    
+                            session_destroy();        
                         } 
                     ?>
                 </li>
@@ -170,6 +171,9 @@
                     <li >
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
+                    <li >
+                        <a href="log.php"><i class="fa fa-fw fa-history"></i> Activity Log</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -188,10 +192,10 @@
                         </h1>
                         <ol class="breadcrumb">
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="survey.php">Surveys Made</a>
+                                <i class="fa fa-table"></i>  <a href="survey.php">Surveys Made</a>
                             </li>
                             <li class="active">
-                                <i class="fa fa-table"></i> Edit Survey
+                                <i class="fa fa-edit"></i> Edit Survey
                             </li>
                         </ol>
                     </div>
@@ -204,15 +208,15 @@
                         
                              <?php 
                                 $s = $_GET['survey']; 
-                                $result = mysqli_query($ntu_survey,"SELECT surveyTitle, userRequired, status FROM survey WHERE surveyId='$s'") or die(mysqli_error());
+                                $result = mysqli_query($ntu_survey,"SELECT surveyTitle, userRequired, status, surveyId FROM survey WHERE surveyId='$s'") or die(mysqli_error());
                                 while ($row = mysqli_fetch_assoc ($result)) {
-                                    echo "<form action='editSurvey.php' method='POST'>";
+                                    echo "<form action='editSurvey.php?survey=$s' method='POST'>";
                                     echo
                                          "<div class='row'>
                                              <div class='form-group'>
                                                 <div class='col-lg-6'>
                                                     <label>Survey Title</label>
-                                                    <input type='text' class='form-control' value=".$row['surveyTitle'].">
+                                                    <input type='text' class='form-control' name='title' value=".$row['surveyTitle'].">
                                                 </div>    
                                             </div>
                                         </div>";
@@ -253,14 +257,11 @@
                                     echo 
                                         "<div class='row'>
                                             <div class='col-lg-6'>
-                                                <button type='button' class='btn btn-default' data-toggle='collapse' data-target='#quest'><strong><i class='fa fa-pencil' aria-hidden='true'></i>Edit Question</strong></button>
-                                                <div id='quest' class='collapse'>
-                                                    
-                                                </div>
+                                                <a href='editQuestion.php?survey=".$row['surveyId']."'><button type='button' class='btn btn-default btn-lg' name='edit'><i class='fa fa-pencil' aria-hidden='true'></i>Edit Questions</button></a>
                                             </div>
-                                        </div>";
-                                    echo "<br>";
+                                         </div>";  
                                     
+                                    echo "<br>";
                                     echo 
                                         "<div class='row'>
                                             <div class='col-lg-6'>

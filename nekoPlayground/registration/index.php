@@ -51,12 +51,45 @@
                             if(mysqli_num_rows($result) > 0) {
                                    echo "<div class='err'>Account already exists!</div>";                                        mysqli_free_result($result);
                             } else {
-                                $sql = "INSERT INTO user (empNum, lastname, firstname, email, password, department, team) VALUES ('$empnumber','$lname', '$fname', '$email', '$password', '$dept', '$team')";
-                                if ($ntu_survey->query($sql) === TRUE) {
+                                if($team == ''){
+                                    
+                                    $sql = "INSERT INTO user (empNum, lastname, firstname, email, password, department, team) VALUES ('$empnumber','$lname', '$fname', '$email', '$password', '$dept', 'none')";
+                                    
+                                    if ($ntu_survey->query($sql) === TRUE) {
+                                       
+                                        $query="SELECT userId from user where email='$email'";
+                                        $result = mysqli_query($ntu_survey, $query);
+                                        $row = $result->fetch_assoc();
+                                        $userId = $row["userId"];
+                                        $date = date('Y-m-d H:i:s');
+                                        $sql1 = "INSERT INTO activitylog (date, action, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Created Account', '$userId')";      
                                         header("Location: ../login/index.php");
-                                } else {
+                                    } else {
                                         echo "Error: " . $sql . "<br>" . $ntu_survey->error;
+                                    }
+                                    
+                                }else{
+                                    $sql = "INSERT INTO user (empNum, lastname, firstname, email, password, department, team) VALUES ('$empnumber','$lname', '$fname', '$email', '$password', '$dept', '$team')";
+                                    if ($ntu_survey->query($sql) === TRUE) {
+                                        $query="SELECT userId from user where email='$email'";
+                                        $result = mysqli_query($ntu_survey, $query);
+                                        $row = $result->fetch_assoc();
+                                        $userId = $row["userId"];
+                                        $date = date('Y-m-d H:i:s');
+                                        $sql1 = "INSERT INTO activitylog (date, action, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Created Account', '$userId')";
+                                       
+                                        if ($ntu_survey->query($sql1) === TRUE) {
+                                            header("Location: ../login/index.php");
+                                        } else {
+                                            echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
+                                        }
+                                        
+                                            
+                                    } else {
+                                        echo "Error: " . $sql . "<br>" . $ntu_survey->error;
+                                    }
                                 }
+                                
                             }
                         }
                     } 
@@ -81,7 +114,7 @@
                 <input type="text" placeholder="Enter your Department" name="dept" required>
                     
                 <label><b>Team</b></label><sup><small>note:leave it blank if you don't belong to any team.</small></sup>
-                <input type="text" placeholder="Enter your Team" name="team" required>
+                <input type="text" placeholder="Enter your Team" name="team" >
                     
                 <button type="submit" class="submitbtn" name="register" ><strong>SIGN UP</strong></button>
                 <hr>

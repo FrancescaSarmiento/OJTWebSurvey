@@ -1,0 +1,32 @@
+@font-face{
+    font-family: Myriad;
+    src: url(MyriadPro-Regular.otf);
+}
+
+label{
+    font-family: Tahoma;
+    font-size: 20px;
+    
+    
+}
+
+.btn{
+    font-family: Tahoma;
+    background-color: dodgerblue;
+    color: white;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.head{
+    font-family: Tahoma;
+    letter-spacing: 2px;
+}
+
+//.customNav{
+  //  background-color: black; 
+//}
+
+//#customSide{
+  //  background-color: black; !important
+//}

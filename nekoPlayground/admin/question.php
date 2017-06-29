@@ -1,6 +1,6 @@
 <?php
     session_start();
-
+    ob_start();
     if ($_SESSION['loggedin'] == false ) {
     header('Location: ../login/index.php');
     }
@@ -125,6 +125,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
                 <a href="../admin/index.php"><img src="../landing/img/lg.png" class="navbar-brand"></a>
                 <a class="navbar-brand" href="../admin/index.php">NTU Admin</a>
@@ -229,7 +230,7 @@
                             <?php
                                 if(isset($_POST['Logout'])) {
                                     $_SESSION['loggedin'] = false;
-                                    echo "<script> window.location.href='../index.php' </script>";
+                                    session_destroy();
                                 } 
                              ?>
                         </li>
@@ -250,6 +251,9 @@
                     </li>
                     <li class="active">
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
+                    </li>
+                    <li >
+                        <a href="log.php"><i class="fa fa-fw fa-history"></i> Activity Log</a>
                     </li>
                 </ul>
             </div>
@@ -361,7 +365,29 @@
                                         <button type="submit" class="btn btn-default" name="questionAdd">Add Question </button>
                                     </div>
                                     <div class="col-lg-2">
-                                        <button type="submit" class="btn btn-default" name="surveySubmit"><a href="survey.php">Submit Survey</a></button>
+                                        <?php
+                                            if(isset($_POST['surveySubmit'])){
+                                                $email = $_SESSION['username'];
+                                                $query="SELECT userId from user where email='$email'";
+                                                $result = mysqli_query($ntu_survey, $query);
+                                                $row = $result->fetch_assoc();
+                                                $userId = $row["userId"];
+                                                
+                                                $date = date('Y-m-d H:i:s');
+                                                $sql1 = "INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Survey Created','$userId')";  
+                    
+                                                if ($ntu_survey->query($sql1) === TRUE) {
+                                                    header("Location:../admin/survey.php");
+                                                } else {
+                                                    echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
+                                                }
+                        
+                                                
+                                                
+                                                
+                                            }
+                                        ?>
+                                        <button type="submit" class="btn btn-default" name="surveySubmit">Submit Survey</button>
                                     </div>
                                 </div>  
                         

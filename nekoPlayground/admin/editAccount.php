@@ -1,5 +1,6 @@
 <?php
     session_start();
+    ob_start();
     if ($_SESSION['loggedin'] == false ) {
     header('Location: ../login/index.php');
     } 
@@ -12,6 +13,8 @@
             die("Connection failed: " . $ntu_survey->connect_error);
         }
     ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,6 +59,7 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                     <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -149,8 +153,9 @@
                     <a href="../landing/index.php" name="Logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                     <?php
                         if(isset($_POST['Logout'])) {
+                            session_destroy(); 
                             $_SESSION['loggedin'] = false;
-                                    
+                            session_destroy();       
                         } 
                     ?>
                 </li>
@@ -170,6 +175,9 @@
                     <li >
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
+                    <li >
+                        <a href="log.php"><i class="fa fa-fw fa-history"></i> Activity Log</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -184,14 +192,14 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header head">
-                            Manage Account
+                            Edit Account
                         </h1>
                         <ol class="breadcrumb">
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="index.php">Dashboard</a>
+                                <i class="fa fa-user"></i>  <a href="manage.php">Manage Account</a>
                             </li>
                             <li class="active">
-                                <i class="fa fa-bar-chart-o"></i> Manage Account
+                                <i class="fa fa-bar-pencil"></i> Edit Account
                             </li>
                         </ol>
                     </div>
@@ -211,7 +219,7 @@
                         if ($result=mysqli_query($ntu_survey, $user)) {
                             if(mysqli_num_rows($result) > 0) {
                                 while ($row = mysqli_fetch_assoc ($result)) {
-                                    echo "<form action='editAccount.php' method='POST'>";
+                                    echo "<form action='editAccount.php?id=$id' method='POST'>";
                                         echo
                                              "<div class='row'>
                                                  <div class='form-group'>
@@ -311,8 +319,32 @@
                                         $sql = "UPDATE user SET empNum='$num',firstname='$fn', lastname='$ln', email='$email', department='$dept', team='$team', type='$role' WHERE userId = '$userId'";
 
                                         if ($ntu_survey->query($sql) === TRUE) {
-                                            echo "Record updated successfully";
+                                            
+                                            $email = $_SESSION['username'];
+                                            $query="SELECT userId from user where email='$email'";
+                                            $result = mysqli_query($ntu_survey, $query);
+                                            $row = $result->fetch_assoc();
+                                            $adminId = $row["userId"];
+                                            
+                                            $queryR="SELECT CONCAT(firstname,'',lastname) 'name' from user where userId='$id'";
+                                            $result = mysqli_query($ntu_survey, $queryR);
+                                            $row = $result->fetch_assoc();
+                                            $res = $row["name"];
+                                            
+                                            
+                                            
+                                            $date = date('Y-m-d H:i:s');
+                                            $sql1 = "INSERT INTO activitylog (date, action, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Modified Profile of " . $res . "', '$adminId')";      
+                                            
+                                            if ($ntu_survey->query($sql1) === TRUE){ 
+                                                
+                                                header("Location: ../admin/log.php");
+                                            } else {
+                                                echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
+                                            }
+                                            
                                         } else {
+                                            
                                             echo "Error updating record: " . $ntu_survey->error;
                                         }
 

@@ -61,9 +61,7 @@ if(mysqli_connect_errno()){
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
                 </button>
-                <a href="../admin/index.php"><img src="../landing/img/lg.png" class="navbar-brand"></a>
                 <a class="navbar-brand" href="../admin/index.php">NTU Admin</a>
             </div>
             <!-- Top Menu Items -->
@@ -149,13 +147,29 @@ if(mysqli_connect_errno()){
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="../landing/index.php" name="Logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                    <?php
-                        if(isset($_POST['Logout'])) {
-                            $_SESSION['loggedin'] = false;
-                            session_destroy();        
-                        } 
-                    ?>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i><b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="../landing/index.php" name="Logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                            
+                             <?php
+                                if(isset($_POST['Logout'])) {
+                                    $_SESSION['loggedin'] = false;
+                                    echo "<script> window.location.href='../index.php' </script>";
+                                } 
+                            ?>
+                        </li>
+                    </ul>
                 </li>
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
@@ -165,16 +179,13 @@ if(mysqli_connect_errno()){
                         <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
                     <li>
-                        <a href="manage.php"><i class="fa fa-fw fa-user"></i>Manage Account</a>
+                        <a href="respondents.php"><i class="fa fa-fw fa-bar-chart-o"></i> Respondents</a>
                     </li>
-                    <li >
+                    <li>
                         <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
                     </li>
-                    <li >
+                    <li>
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
-                    </li>
-                    <li >
-                        <a href="log.php"><i class="fa fa-fw fa-history"></i> Activity Log</a>
                     </li>
                 </ul>
             </div>
@@ -264,12 +275,7 @@ if(mysqli_connect_errno()){
                                         <i class="fa fa-support fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">
-                                            <?php
-                                                $count="SELECT ifnull(COUNT(survey.surveyId),0) as 'c' FROM survey"; 
-                                                echo " ";
-                                            ?>
-                                        </div>
+                                        <div class="huge">13</div>
                                         <div>Noble Trend Surveys!</div>
                                     </div>
                                 </div>
