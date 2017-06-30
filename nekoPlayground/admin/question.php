@@ -304,7 +304,7 @@
                                 </div>
                                 
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-7">
                                         <div class="form-group">
                                             <label >Question</label>
                                             <input type="text" class="form-control" name="questionDescription" placeholder="Enter your Question"required>
@@ -318,7 +318,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-7">
                                         <div class="form-group">
                                             <input type="text" class="form-control" name="c1" placeholder="Enter a Choice"required>
                                         </div>
@@ -326,14 +326,14 @@
                                 </div>
                                 
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-7">
                                         <div class="form-group">
                                             <input type="text" class="form-control" name="c2" placeholder="Enter a Choice"required>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-7">
                                         <div class="form-group">
                                             <input type="text" class="form-control" name="c3" placeholder="Enter a Choice">
                                         </div>
@@ -341,7 +341,7 @@
                                 </div>
                                 
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-7">
                                         <div class="form-group">
                                             <input type="text" class="form-control" name="c4" placeholder="Enter a Choice">
                                         </div>
@@ -349,7 +349,7 @@
                                 </div>
                                 
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-7">
                                         <div class="form-group">
                                             <input type="text" class="form-control" name="c5" placeholder="Enter a Choice">
                                         </div>
@@ -361,8 +361,8 @@
                                 
                                 <div class ="row">
                 
-                                    <div class="col-lg-2">
-                                        <button type="submit" class="btn btn-default" name="questionAdd">Add Question </button>
+                                    <div class="col-lg-5">
+                                        <button type="submit" class="btn btn-default btn-md" name="questionAdd">Add Question </button>
                                     </div>
                                     <div class="col-lg-2">
                                         <?php
@@ -387,7 +387,7 @@
                                                 
                                             }
                                         ?>
-                                        <button type="submit" class="btn btn-default" name="surveySubmit">Submit Survey</button>
+                                        <button type="submit" class="btn btn-default btn-md" name="surveySubmit">Submit Survey</button>
                                     </div>
                                 </div>  
                         

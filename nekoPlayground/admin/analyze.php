@@ -189,7 +189,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header head">
-                            Surveys
+                            Analyze Result
                         </h1>
                         <ol class="breadcrumb">
                             <li>
@@ -206,7 +206,7 @@
                 <!-- Flot Charts -->
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2 class="page-header">Summary of Surveys</h2>
+                        <h2 class="page-header">Summary Result of Surveys</h2>
                         <p class="lead"><small>The summary of surveys consists the answers coming from the respondents.</small></p>
                     </div>
                 </div>
