@@ -219,20 +219,27 @@
                                                  "<div class='row'>
                                                      <div class='form-group'>
                                                         <div class='col-lg-6'>
-                                                            <label>Survey Title</label>
-                                                            <input type='text' class='form-control' name='title' value=".$row['surveyTitle'].">
+                                                            <label><strong>Survey Title: </strong> <em>".$row['surveyTitle']."</em></label>
+                                                            <input type='text' class='form-control' value='".$row['surveyTitle']."' name='title'>
                                                         </div>    
                                                     </div>
                                                 </div>";
+                                            
                                              echo "<br>";
                                              echo
                                                  "<div class='row'>
                                                     <div class='form-group'>
                                                         <div class = 'col-lg-6'>
                                                             <label><strong>User Required: <strong> <em>".$row['userRequired']."</em> </label>
+                                                            
                                                             <select class='form-control' name='optU'>
+                                                                
+                                                                <option disabled  value=''>-- select an option -- <option>
                                                                 <option>Yes</option>
                                                                 <option>No</option>
+                                                                
+                                                            </select>
+                                                             
                                                             </select>
 
 
@@ -246,13 +253,10 @@
                                                             <label><strong>Survey Status: <strong> <em>".$row['status']."</em> </label>
                                                             
                                                             <select class='form-control' name='optS'>
-                                                                if(".$row['status']." == 'Enable'){
-                                                                    <option>Enable</option>
-                                                                    <option>Disable</option>
-                                                                }else if(".$row['status']." == 'Disable'){
-                                                                    <option>Disable</option>
-                                                                    <option>Enable</option>
-                                                                }
+                                                                <option disabled  value=''>-- select an option -- <option>
+                                                                <option>Disable</option>
+                                                                <option>Enable</option>
+                                                                
                                                             </select>
                                                        </div>    
                                                     </div>
@@ -265,7 +269,7 @@
                                                         <a href='editQuestion.php?survey=".$row['surveyId']."'><button type='button' class='btn btn-default btn-lg' name='edit'><i class='fa fa-pencil' aria-hidden='true'></i>Edit Questions</button></a>
                                                     </div>
                                                     <div class='col-lg-4'>
-                                                        <a href='question.php?survey=".$row['surveyId']."'><button type='button' class='btn btn-default btn-lg' name='edit'><i class='fa fa-plus' aria-hidden='true'></i>Add Question</button></a>
+                                                        <a href='addQuestion.php?survey=".$row['surveyId']."'><button type='button' class='btn btn-default btn-lg' name='edit'><i class='fa fa-plus' aria-hidden='true'></i>Add Question</button></a>
                                                     </div>
                                                  </div>";  
 
@@ -276,45 +280,142 @@
                                                         <a href='survey.php'><button type='button' class='btn btn-default btn-lg'>Cancel</button></a>
                                                     </div>
                                                     <div class='col-lg-4'>
-                                                        <button type='submit' name='submit' class='btn btn-default btn-lg'><strong> Submit </strong></button>
+                                                        <button type='submit' name='submit' class='btn btn-default btn-lg'><strong> Submit</strong></button>
                                                     </div>
                                                  </div>";    
                                             echo "</form>";
 
                                             if(isset($_POST['submit'])){
-                                            $t = $_POST['title'];
-                                            $uR = $_POSR['optU'];
-                                            $stat = $_POST['optS'];
-                                            $sql = "UPDATE user SET surveyTitle='$t',userRequired='$uR', status='$stat' WHERE surveyId = '$s'";
+                                                $t = $_POST['title'];
+                                                $uR = $_POSR['optU'];
+                                                $stat = $_POST['optS'];
 
-                                                if ($ntu_survey->query($sql) === TRUE) {
+                                                if ($uR == '' && $stat == ''){
+                                                    
+                                                    $sql = "UPDATE user SET surveyTitle='$t' WHERE surveyId = '$s'";
 
-                                                    $email = $_SESSION['username'];
-                                                    $query="SELECT userId from user where email='$email'";
-                                                    $result = mysqli_query($ntu_survey, $query);
-                                                    $row = $result->fetch_assoc();
-                                                    $adminId = $row["userId"];
+                                                    if ($ntu_survey->query($sql) === TRUE) {
 
-                                                    $queryR="SELECT surveyTitle from survey where surveyId='$s'";
-                                                    $result = mysqli_query($ntu_survey, $queryR);
-                                                    $row = $result->fetch_assoc();
-                                                    $survey = $row["surveyTitle"];
+                                                        $email = $_SESSION['username'];
+                                                        $query="SELECT userId from user where email='$email'";
+                                                        $result = mysqli_query($ntu_survey, $query);
+                                                        $row = $result->fetch_assoc();
+                                                        $adminId = $row["userId"];
+
+                                                        $queryR="SELECT surveyTitle from survey where surveyId='$s'";
+                                                        $result = mysqli_query($ntu_survey, $queryR);
+                                                        $row = $result->fetch_assoc();
+                                                        $survey = $row["surveyTitle"];
 
 
 
-                                                    $date = date('Y-m-d H:i:s');
-                                                    $sql1 = "INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Modified Survey " . $survey . "', '$adminId')";      
+                                                        $date = date('Y-m-d H:i:s');
+                                                        $sql1 = "INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Modified Title Survey of " . $survey . "', '$adminId')";      
 
-                                                    if ($ntu_survey->query($sql1) === TRUE){ 
+                                                        if ($ntu_survey->query($sql1) === TRUE){ 
+                                                            header("Location: ../admin/log.php");
+                                                        } else {
+                                                            echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
+                                                        }
+                                                    }else {
 
-                                                        header("Location: ../admin/log.php");
-                                                    } else {
-                                                        echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
+                                                            echo "Error updating record: " . $ntu_survey->error;
                                                     }
 
-                                                } else {
+                                                }else if($uR == ''){
+                                                         $sql = "UPDATE user SET surveyTitle='$t', userRequired='$uR' WHERE surveyId = '$s'";
 
-                                                    echo "Error updating record: " . $ntu_survey->error;
+                                                        if ($ntu_survey->query($sql) === TRUE) {
+
+                                                            $email = $_SESSION['username'];
+                                                            $query="SELECT userId from user where email='$email'";
+                                                            $result = mysqli_query($ntu_survey, $query);
+                                                            $row = $result->fetch_assoc();
+                                                            $adminId = $row["userId"];
+
+                                                            $queryR="SELECT surveyTitle from survey where surveyId='$s'";
+                                                            $result = mysqli_query($ntu_survey, $queryR);
+                                                            $row = $result->fetch_assoc();
+                                                            $survey = $row["surveyTitle"];
+
+
+
+                                                            $date = date('Y-m-d H:i:s');
+                                                            $sql1 = "INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Modified user required of " . $survey . "', '$adminId')";      
+
+                                                            if ($ntu_survey->query($sql1) === TRUE){ 
+                                                                header("Location: ../admin/log.php");
+                                                            } else {
+                                                                echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
+                                                            }
+                                                        } else {
+
+                                                            echo "Error updating record: " . $ntu_survey->error;
+                                                        }
+
+                                                }else if($stat == ''){
+                                                         $sql = "UPDATE user SET surveyTitle='$t', status='$stat' WHERE surveyId = '$s'";
+
+                                                        if ($ntu_survey->query($sql) === TRUE) {
+
+                                                            $email = $_SESSION['username'];
+                                                            $query="SELECT userId from user where email='$email'";
+                                                            $result = mysqli_query($ntu_survey, $query);
+                                                            $row = $result->fetch_assoc();
+                                                            $adminId = $row["userId"];
+
+                                                            $queryR="SELECT surveyTitle from survey where surveyId='$s'";
+                                                            $result = mysqli_query($ntu_survey, $queryR);
+                                                            $row = $result->fetch_assoc();
+                                                            $survey = $row["surveyTitle"];
+
+
+
+                                                            $date = date('Y-m-d H:i:s');
+                                                            $sql1 = "INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Modified status survey of " . $survey . "', '$adminId')";      
+
+                                                            if ($ntu_survey->query($sql1) === TRUE){ 
+                                                                header("Location: ../admin/log.php");
+                                                            } else {
+                                                                echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
+                                                            }
+                                                        } else {
+
+                                                            echo "Error updating record: " . $ntu_survey->error;
+                                                        }
+                                                        
+                                                        
+                                                }else{
+                                                    $sql = "UPDATE user SET surveyTitle='$t',userRequired='$uR', status='$stat' WHERE surveyId = '$s'";
+
+                                                    if ($ntu_survey->query($sql) === TRUE) {
+
+                                                        $email = $_SESSION['username'];
+                                                        $query="SELECT userId from user where email='$email'";
+                                                        $result = mysqli_query($ntu_survey, $query);
+                                                        $row = $result->fetch_assoc();
+                                                        $adminId = $row["userId"];
+
+                                                        $queryR="SELECT surveyTitle from survey where surveyId='$s'";
+                                                        $result = mysqli_query($ntu_survey, $queryR);
+                                                        $row = $result->fetch_assoc();
+                                                        $survey = $row["surveyTitle"];
+
+
+
+                                                        $date = date('Y-m-d H:i:s');
+                                                        $sql1 = "INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Modified Survey " . $survey . "', '$adminId')";      
+
+                                                        if ($ntu_survey->query($sql1) === TRUE){ 
+                                                            header("Location: ../admin/log.php");
+                                                        } else {
+                                                            echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
+                                                        }
+
+                                                    } else {
+
+                                                        echo "Error updating record: " . $ntu_survey->error;
+                                                    }
                                                 }
                                             }
 

@@ -224,8 +224,8 @@
                                              "<div class='row'>
                                                  <div class='form-group'>
                                                     <div class='col-lg-6'>
-                                                        <label>Employee Number</label>
-                                                        <input type='text' class='form-control' name='empNum' value=".$row['empNum']." >
+                                                       <label><strong>Employee Number: </strong> <em>".$row['empNum']."</em></label>
+                                                        <input type='text' class='form-control' name='empNum' value='".$row['empNum']."' >
                                                     </div>    
                                                 </div>
                                             </div>";
@@ -234,8 +234,8 @@
                                              "<div class='row'>
                                                  <div class='form-group'>
                                                     <div class='col-lg-6'>
-                                                        <label>Lastname</label>
-                                                        <input type='text' class='form-control' value=".$row['lastName']." name='ln'>
+                                                        <label><strong>Lastname: </strong> <em>".$row['lastName']."</em></label>
+                                                        <input type='text' class='form-control' value='".$row['lastName']."' name='ln'>
                                                     </div>    
                                                 </div>
                                             </div>"; 
@@ -244,8 +244,8 @@
                                              "<div class='row'>
                                                  <div class='form-group'>
                                                     <div class='col-lg-6'>
-                                                        <label>Firstname</label>
-                                                        <input type='text' class='form-control' value=".$row['firstName']." name='fn'>
+                                                        <label><strong>Firstname: </strong> <em>".$row['firstName']."</em></label>
+                                                        <input type='text' class='form-control' value='".$row['firstName']."' name='fn'>
                                                     </div>    
                                                 </div>
                                             </div>";
@@ -254,8 +254,8 @@
                                              "<div class='row'>
                                                  <div class='form-group'>
                                                     <div class='col-lg-6'>
-                                                        <label>E-mail Address</label>
-                                                        <input type='text' class='form-control' value=".$row['email']." name='email'>
+                                                        <label><strong>E-mail Address: </strong> <em>".$row['email']."</em></label>
+                                                        <input type='text' class='form-control' value='".$row['email']."' name='email'>
                                                     </div>    
                                                 </div>
                                             </div>";
@@ -264,8 +264,8 @@
                                              "<div class='row'>
                                                  <div class='form-group'>
                                                     <div class='col-lg-6'>
-                                                        <label>Department</label>
-                                                        <input type='text' class='form-control' value=".$row['department']." name='dept'>
+                                                        <label><strong>Department: </strong> <em>".$row['department']."</em></label>
+                                                        <input type='text' class='form-control' value='".$row['department']."' name='dept'>
                                                     </div>    
                                                 </div>
                                             </div>";
@@ -274,8 +274,8 @@
                                              "<div class='row'>
                                                  <div class='form-group'>
                                                     <div class='col-lg-6'>
-                                                        <label>Team</label>
-                                                        <input type='text' class='form-control' value=".$row['team']." name='team'>
+                                                        <label><strong>Team: </strong> <em>".$row['team']."</em></label>
+                                                        <input type='text' class='form-control' value='".$row['team']."' name='team'>
                                                     </div>    
                                                 </div>
                                             </div>";
@@ -285,9 +285,10 @@
                                                     <div class='form-group'>
                                                         <div class='col-lg-6'>
                                                             <label><strong>User Role: <strong> <em>".$row['type']."</em> </label>
-                                                            <div class'col-lg-4'>
+                                                            <div class'col-lg-4'>                                               
                                                                 <select class='form-control' name='optR'>
-                                                                    <option>Admin</option>
+                                                                    <option disabled value=''><option>
+                                                                    <option >Admin</option>
                                                                     <option>Respondent</option>
                                                                 </select>
                                                             </div>
@@ -315,8 +316,9 @@
                                         $dept = $_POST['dept'];
                                         $team = $_POST['team'];
                                         $role = $_POST['optR'];
-
-                                        $sql = "UPDATE user SET empNum='$num',firstname='$fn', lastname='$ln', email='$email', department='$dept', team='$team', type='$role' WHERE userId = '$userId'";
+                                        
+                                        if($role == ''){
+                                            $sql = "UPDATE user SET empNum='$num',firstname='$fn', lastname='$ln', email='$email', department='$dept', team='$team' WHERE userId = '$userId'";
 
                                         if ($ntu_survey->query($sql) === TRUE) {
                                             
@@ -347,6 +349,42 @@
                                             
                                             echo "Error updating record: " . $ntu_survey->error;
                                         }
+                                                
+                                        }else{
+                                            $sql = "UPDATE user SET empNum='$num',firstname='$fn', lastname='$ln', email='$email', department='$dept', team='$team', type='$role' WHERE userId = '$userId'";
+
+                                            if ($ntu_survey->query($sql) === TRUE) {
+
+                                                $email = $_SESSION['username'];
+                                                $query="SELECT userId from user where email='$email'";
+                                                $result = mysqli_query($ntu_survey, $query);
+                                                $row = $result->fetch_assoc();
+                                                $adminId = $row["userId"];
+
+                                                $queryR="SELECT CONCAT(firstname,'',lastname) 'name' from user where userId='$id'";
+                                                $result = mysqli_query($ntu_survey, $queryR);
+                                                $row = $result->fetch_assoc();
+                                                $res = $row["name"];
+
+
+
+                                                $date = date('Y-m-d H:i:s');
+                                                $sql1 = "INSERT INTO activitylog (date, action, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Modified Profile and Status of " . $res . "', '$adminId')";      
+
+                                                if ($ntu_survey->query($sql1) === TRUE){ 
+
+                                                    header("Location: ../admin/log.php");
+                                                } else {
+                                                    echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
+                                                }
+
+                                            } else {
+
+                                                echo "Error updating record: " . $ntu_survey->error;
+                                            }
+                                        }
+
+                                        
 
                                         $ntu_survey->close();
                                     }

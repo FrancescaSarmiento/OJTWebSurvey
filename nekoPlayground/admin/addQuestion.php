@@ -19,11 +19,7 @@
 ?>
 <?php
         if (isset($_POST["questionAdd"])){
-            $surveyTitle = $_SESSION['surveyTitle'];
-            $query="SELECT surveyId from survey where surveyTitle='$surveyTitle'";
-            $result = mysqli_query($ntu_survey, $query);
-            $row = $result->fetch_assoc();
-            $surveyId = $row["surveyId"];
+            $s1= $_GET['survey'];
             $questionId = $_POST['questionId'];
             $questionNo = $_POST['questionNo'];
             $questionDescription = $_POST['questionDescription'];
@@ -36,7 +32,7 @@
             $choices[4] = $_POST['c4'];
             $choices[5] = $_POST['c5'];
             
-            $sql = "INSERT INTO `question` ( questionNo, questionDescription, surveyId) VALUES ('$questionNo','$questionDescription' , '$surveyId')";
+            $sql = "INSERT INTO `question` ( questionNo, questionDescription, surveyId) VALUES ('$questionNo','$questionDescription' , '$s1')";
             
             
             
@@ -246,10 +242,10 @@
                     <li>
                         <a href="manage.php"><i class="fa fa-fw fa-user"></i>Manage Account</a>
                     </li>
-                    <li >
+                    <li class="active">
                         <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
                     </li>
-                    <li class="active">
+                    <li >
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
                     <li >
@@ -268,14 +264,18 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                             Create a Question!
+                             Add Question!
                         </h1>
                         <ol class="breadcrumb">
+                             <?php
+                                $s =$_GET['survey'];
+                            
+                            ?>
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="create.php"> Create a Survey!</a>
+                                <i class="fa fa-pencil"></i>  <a href="<?php echo "editSurvey.php?survey=$s";?>">Edit Survey</a>
                             </li>
                             <li class="active">
-                                <i class="fa fa-edit"></i> Create a Question!
+                                <i class="fa fa-edit"></i> Add Question!
                             </li>
                         </ol>
                     </div>
@@ -290,7 +290,8 @@
             
             
                 <div class="row">
-                    <form role="form" method="POST" action="question.php">
+                    
+                    <form role="form" method="POST" action="<?php echo "addQuestion.php?survey=$s" ?>">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-lg-3">
@@ -367,6 +368,7 @@
                                     <div class="col-lg-2">
                                         <?php
                                             if(isset($_POST['surveySubmit'])){
+                                                
                                                 $email = $_SESSION['username'];
                                                 $query="SELECT userId from user where email='$email'";
                                                 $result = mysqli_query($ntu_survey, $query);
@@ -374,7 +376,7 @@
                                                 $userId = $row["userId"];
                                                 
                                                 $date = date('Y-m-d H:i:s');
-                                                $sql1 = "INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Survey has been Created','$userId')";  
+                                                $sql1 = "INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Added Question for the Survey','$userId')";  
                     
                                                 if ($ntu_survey->query($sql1) === TRUE) {
                                                     header("Location:../admin/survey.php");

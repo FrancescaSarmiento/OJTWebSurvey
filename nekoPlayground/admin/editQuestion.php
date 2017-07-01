@@ -12,7 +12,7 @@
         if ($ntu_survey->connect_error) {
             die("Connection failed: " . $ntu_survey->connect_error);
         }
-    ?>
+?>
 
 
 <!DOCTYPE html>
@@ -195,8 +195,12 @@
                             Edit Question
                         </h1>
                         <ol class="breadcrumb">
+                            <?php
+                                $s =$_GET['survey'];
+                            
+                            ?>
                             <li>
-                                <i class="fa fa-pencil"></i>  <a href="editSurvey.php">Edit Survey</a>
+                                <i class="fa fa-pencil"></i>  <a href="<?php echo "editSurvey.php?survey=$s";?>">Edit Survey</a>
                             </li>
                             <li class="active">
                                 <i class="fa fa-pencil"></i> Edit Question

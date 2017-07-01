@@ -1,0 +1,12 @@
+1.Functional
+  -manage account
+  -activity log
+  -create survey
+2. Semi Functional 
+  -survey
+    -functional:delete
+    -semi: edit
+    -not: analyze
+3. Not functional
+  -dashboard
+  -notification
