@@ -19,11 +19,7 @@
 ?>
 <?php
         if (isset($_POST["questionAdd"])){
-            $surveyTitle = $_SESSION['surveyTitle'];
-            $query="SELECT surveyId from survey where surveyTitle='$surveyTitle'";
-            $result = mysqli_query($ntu_survey, $query);
-            $row = $result->fetch_assoc();
-            $surveyId = $row["surveyId"];
+            $s1= $_GET['survey'];
             $questionId = $_POST['questionId'];
             $questionNo = $_POST['questionNo'];
             $questionDescription = $_POST['questionDescription'];
@@ -36,7 +32,7 @@
             $choices[4] = $_POST['c4'];
             $choices[5] = $_POST['c5'];
             
-            if($questionNo == '' || $questionDescription == ''){
+              if($questionNo == '' || $questionDescription == ''){
                 
                 $msg="Question Number Field or Question Field is empty. Please Enter a value. ";
                 
@@ -49,7 +45,7 @@
                     
                     $msg="Insufficient input for choice!";
                 }else{
-                    $n="SELECT questionNo from question inner join survey using(surveyId) where survey.surveyId='$surveyId' ORDER BY questionNo DESC LIMIT 1";
+                    $n="SELECT questionNo from question inner join survey using(surveyId) where survey.surveyId='$s1' ORDER BY questionNo DESC LIMIT 1";
                     $r = mysqli_query($ntu_survey, $n);
                     $row1 = $r->fetch_assoc();
                     $number = $row1["questionNo"];
@@ -64,7 +60,7 @@
                         $msg = " ".$questionNo."  is already used!";
 
                     }else{
-                        $sql = "INSERT INTO `question` ( questionNo, questionDescription, surveyId) VALUES ('$questionNo','$questionDescription' , '$surveyId')";
+                        $sql = "INSERT INTO `question` ( questionNo, questionDescription, surveyId) VALUES ('$questionNo','$questionDescription' , '$s1')";
 
 
 
@@ -102,8 +98,8 @@
                     }
                 }
                     
-            }
-                                           
+              }
+                                            
         }
   
    
@@ -272,18 +268,13 @@
                     <li>
                         <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
-                    <li>
-                        <a href="manage.php"><i class="fa fa-fw fa-user"></i>Manage Account</a>
-                    </li>
-                    <li >
+                    <li class="active">
                         <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
                     </li>
-                    <li class="active">
+                    <li >
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
-                    <li >
-                        <a href="log.php"><i class="fa fa-fw fa-history"></i> Activity Log</a>
-                    </li>
+                    
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -297,14 +288,18 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                             Create a Question!
+                             Add Question!
                         </h1>
                         <ol class="breadcrumb">
+                             <?php
+                                $s =$_GET['survey'];
+                            
+                            ?>
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="create.php"> Create a Survey!</a>
+                                <i class="fa fa-pencil"></i>  <a href="<?php echo "editSurvey.php?survey=$s";?>">Edit Survey</a>
                             </li>
                             <li class="active">
-                                <i class="fa fa-edit"></i> Create a Question!
+                                <i class="fa fa-edit"></i> Add Question!
                             </li>
                         </ol>
                     </div>
@@ -319,18 +314,21 @@
             
             
                 <div class="row">
-                    <form role="form" method="POST" action="question.php">
+                    
+                    <form role="form" method="POST" action="<?php echo "addQuestion.php?survey=$s" ?>">
+                        
                             <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <a href="<?php echo "editSurvey.php?survey=$s";?>"><button type="button" class="btn btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i>Back</button></a>
+                                    </div>
+                                </div>
+                                <br>
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            
                                             <?php
-                                                $surveyTitle = $_SESSION['surveyTitle'];
-                                                $query="SELECT surveyId from survey where surveyTitle='$surveyTitle'";
-                                                $result = mysqli_query($ntu_survey, $query);
-                                                $row = $result->fetch_assoc();
-                                                $surveyId = $row["surveyId"];
+                                                $surveyId = $_GET['survey'];
                                                 $n="SELECT questionNo from question inner join survey using(surveyId) where survey.surveyId='$surveyId' ORDER BY questionNo DESC LIMIT 1";
                                                 $r = mysqli_query($ntu_survey, $n);
                                                 $row1 = $r->fetch_assoc();
@@ -345,9 +343,8 @@
                                                     $number++;
                                                 }
                                             ?>
-                                            
                                             <label >Question Number</label>
-                                            <input type="text" class="form-control" name="questionNo" value="<?php echo "$number"; ?>" >
+                                            <input type="text" class="form-control" name="questionNo" value="<?php echo "$number";?>">
                                             <input type="hidden" name="surveyId">
                                             <input type="hidden" name="questionId">
                                         </div>
@@ -411,11 +408,11 @@
                                 
                                 
                                 <div class ="row">
-                
-                                    <div class="col-lg-5">
-                                        <button type="submit" class="btn btn-default btn-md" name="questionAdd">Add Question </button>
+                                    
+                                    <div class="col-lg-9">
+                                        <button type="submit" class="btn btn-default " name="questionAdd">Add Question </button>
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <?php
                                             if(isset($_POST['surveySubmit'])){
                                                 
@@ -426,7 +423,7 @@
                                                 $userId = $row["userId"];
                                                 
                                                 $date = date('Y-m-d H:i:s');
-                                                $sql1 = "INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Survey has been Created','$userId')";  
+                                                $sql1 = "INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Added Question for the Survey','$userId')";  
                     
                                                 if ($ntu_survey->query($sql1) === TRUE) {
                                                     header("Location:../admin/survey.php");
@@ -439,7 +436,7 @@
                                                 
                                             }
                                         ?>
-                                        <button type="submit" class="btn btn-default btn-md" name="surveySubmit">Submit Survey</button>
+                                        <button type="submit" class="btn btn-default " name="surveySubmit">Submit Survey</button>
                                     </div>
                                 </div>  
                         

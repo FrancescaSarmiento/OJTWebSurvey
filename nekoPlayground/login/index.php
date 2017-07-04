@@ -35,6 +35,7 @@
 
                 $resultR = mysqli_query($ntu_survey, "SELECT * FROM user WHERE email = '$username' AND password = '$password' AND type ='respondent'" );
                 $resultA = mysqli_query($ntu_survey, "SELECT * FROM user WHERE email = '$username' AND password = '$password' AND type ='admin' ");
+                $resultS = mysqli_query($ntu_survey, "SELECT * FROM user WHERE email = '$username' AND password = '$password' AND type ='supervisor' ");
                                         
                     if(mysqli_num_rows($resultR) > 0) {
                     
@@ -47,6 +48,11 @@
                     $_SESSION['loggedin'] = true;
                     $_SESSION['username'] = $username;
                     header("Location: ../admin/index.php"); 
+
+                    }else if(mysqli_num_rows($resultS) > 0) {
+                    $_SESSION['loggedin'] = true;
+                    $_SESSION['username'] = $username;
+                    header("Location: ../supervisor/index.php"); 
 
                     }else {
                         $errorMsg = "Incorrect email or password!";

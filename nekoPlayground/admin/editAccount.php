@@ -283,12 +283,13 @@
                                         echo
                                             "<div class='row'>
                                                     <div class='form-group'>
-                                                        <div class='col-lg-6'>
+                                                        <div class='col-md-6'>
                                                             <label><strong>User Role: <strong> <em>".$row['type']."</em> </label>
-                                                            <div class'col-lg-4'>                                               
-                                                                <select class='form-control' name='optR'>
-                                                                    <option disabled value=''><option>
+                                                            <div class'col-xs-2'>                                               
+                                                                <select class='form-control' name='optR' style='width:auto;'>
+                                                                    <option disabled value='' selected><center>-------------select an option-------------</center><option>
                                                                     <option >Admin</option>
+                                                                    <option >Supervisor</option>
                                                                     <option>Respondent</option>
                                                                 </select>
                                                             </div>
@@ -296,16 +297,23 @@
                                                     </div>
                                                  </div>";
                                         echo "<br>";
+                                        echo "<br>";
+                                        echo "<br>";
                                         echo 
                                                 "<div class='row'>
-                                                    <div class='btn-group'>
-                                                        <div class='col-lg-12'>
-                                                            <a href='manage.php'><button type='button' class='btn btn-default btn-lg'><strong>Cancel</strong></button></a>
-                                                             <button type='submit' name='submit' class='btn btn-default btn-lg'><strong>Submit</strong></button>
-                                                        </div>
+                                                    <div class ='form-group'>
+                                                    <div class='col-lg-11'>
+                                                        <a href='manage.php'><button type='button' class='btn btn-default btn-lg'><strong>Cancel</strong></button></a>
                                                     </div>
+                                                    <div class='col-lg-1'>
+                                                        <button type='submit' name='submit' class='btn btn-default btn-lg'><strong>Done</strong></button>
+                                                    </div>
+                                                    
+                                                    </div>
+                                                   
                                                  </div>";    
                                     echo "</form>";
+                                    echo "<br>";
 
                                     if(isset($_POST['submit'])){
 

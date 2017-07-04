@@ -272,18 +272,14 @@
                     <li>
                         <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
-                    <li>
-                        <a href="manage.php"><i class="fa fa-fw fa-user"></i>Manage Account</a>
-                    </li>
+                    
                     <li >
                         <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
                     </li>
                     <li class="active">
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
-                    <li >
-                        <a href="log.php"><i class="fa fa-fw fa-history"></i> Activity Log</a>
-                    </li>
+                   
                 </ul>
             </div>
             <!-- /.navbar-collapse -->

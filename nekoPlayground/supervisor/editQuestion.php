@@ -210,18 +210,13 @@
                     <li>
                         <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
-                    <li >
-                        <a href="manage.php"><i class="fa fa-fw fa-user"></i>Manage Account</a>
-                    </li>
                     <li class="active">
                         <a href="survey.php"><i class="fa fa-fw fa-table"></i> Surveys</a>
                     </li>
                     <li >
                         <a href="create.php"><i class="fa fa-fw fa-edit"></i> Create a Survey!</a>
                     </li>
-                    <li >
-                        <a href="log.php"><i class="fa fa-fw fa-history"></i> Activity Log</a>
-                    </li>
+                    
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -254,9 +249,11 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <?php
+                       <?php
+                           $surveyId = $_GET['survey'];
+                            
                                                 
-                            $questions = "select DISTINCT questionId , question.questionNo as 'num',question.questionDescription as 'des' from question inner join survey using (surveyId) WHERE survey.surveyId = '$s'";
+                            $questions = "select DISTINCT questionId as 'idQ' , question.questionNo as 'num',question.questionDescription as 'des' from question inner join survey using (surveyId) WHERE survey.surveyId = '$surveyId'";
                         
                              
                             
@@ -264,146 +261,102 @@
                             if ($result=mysqli_query($ntu_survey, $questions)) {
                                 if(mysqli_num_rows($result) > 0) {
                                     while ($row=mysqli_fetch_array($result)){
-                                        echo "<form action='editSurvey.php?survey=$s' method='POST' >";
-                        ?>            
-                                    <div class = "form-group">
-                                                                    
-                                        <div class="col-md-1">
-                                            <input type="text" class="form-control" name="num"  value="<?php echo "" . $row['num'] . ""; ?>">
-                                        </div> 
-                                        <div class="col-lg-7">
-                                            <input type="text" class="form-control" name="q" value="<?php echo "" . $row['des'] . ""; ?>">
-                                        </div>
-                                        <div class='col-xs-1'>
-                                            <button type='submit' class='btn btn-default btn-sm' name='submit' ><i class='fa fa-trash-o' aria-hidden='true'></i></button>
-                                        </div>
-                                        <br>
-                                        <br>
-                                        <br>
-                                        <?php
-                                            
-                                           
-                                            $temp = $row['questionId'];
-                                            $choice = $row['questionId'];
-                                            $choices = "SELECT questionId, choice.choiceId as 'cId', choice.choiceDescription as 'cD' FROM choice WHERE questionId ='$temp' ";
+                                        echo "<form action='editQuestion.php?survey=$surveyId' method='POST' >";
                                         
-                                            $i=0;
-                                            $w = 0;
+                        ?>            
+                                        <div class='row'>
+                                            <div class="col-lg-12">
+                                                
+                                                <div class ="form-group">
+                                                    <div class="row">
+                                                        <div class="col-lg-3">
+                                                            <label>Question #: </label>
+                                                            <input type='text' class='form-control' name= 'num' value='<?php echo "" . $row['num'] . ""; ?>'>
+                                                        </div>
+
+                                                        <div class="col-lg-7">
+                                                            <label>Question:</label>
+                                                            <input type='text' class='form-control' name='des' value='<?php echo "" . $row['des'] . ""; ?>'>  
+                                                        </div>
+                                                        
+                                                        <div class="col-lg-1">
+                                                            <form action = "<?php echo "editQuestion.php?survey=$surveyId"; ?>" method='POST'>
+                                                           
+                                                                <input type='hidden' name='sId' value=' <?php echo "" . $row['idQ'] .""; ?> ' >
+                                                               
+                                                               <button type='submit' class='btn btn-default btn-lg' name='delQ'><i class='fa fa-trash-o' aria-hidden='true'></i></button>
+                                                            </form> 
+                                                        </div>
                                                        
-                                            
-                                            if ($result1=mysqli_query($ntu_survey, $choices)) {
-                                                if(mysqli_num_rows($result1)>0){
-                                                    while ($row1=mysqli_fetch_array($result1)){ 
-                                                        echo "
-                                                            <div class='col-lg-8'> 
-                                                                <input type='hidden' name='choice[$choice][]' value='" . $row1['cId'] .  "'>
-                                                                <input type='text' class='form-control' name='ch[$choice][]' value='" . $row1['cD'] . "'> 
-                                                            </div>
-                                                            <div class='col-xs-1'>
-                                                                <button type='submit' class='btn btn-default btn-sm' name='submit' ><i class='fa fa-trash-o' aria-hidden='true'></i></button>
-                                                            </div>";
-                                                            $i++;
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                     
-                                                    }
-                                                    if($i == 4){
-                                                        echo "
-                                                            <div class='col-lg-8'> 
-                                                                <input type='hidden' name='choice[$choice][]''>
-                                                                <input type='text' class='form-control' name='newChoice'> 
-                                                            </div>
-                                                            <div class='col-xs-1'>
-                                                                <button type='submit' class='btn btn-default btn-sm' name='submit' ><i class='fa fa-trash-o' aria-hidden='true'></i></button>
-                                                            </div>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                    }else if ($i == 3){
-                                                        while($w != 2){
-                                                            echo "
-                                                            <div class='col-lg-8'> 
-                                                                <input type='hidden' name='choice[$choice][]' value='" . $row1['cId'] .  "'>
-                                                                <input type='text' class='form-control' name='newChoice' value='" . $row1['cD'] . "'> 
-                                                            </div>
-                                                            <div class='col-xs-1'>
-                                                                <button type='submit' class='btn btn-default btn-sm' name='submit' ><i class='fa fa-trash-o' aria-hidden='true'></i></button>
-                                                            </div> ";
-                                                            $w++;
+                                                    </div>
+                                                    
+                                                    
+                                                    
+                                                    <br>
+                                                    <br>
+
+                                                    <?php
+                                                        $temp = $row["idQ"];
+                                                        $choices = "SELECT choice.choiceId as 'cId', choice.choiceDescription as 'cD' FROM choice WHERE questionId ='$temp' ";
+                                                        $count = "SELECT count(choice.choiceId) FROM choice WHERE questionId ='$temp' ";
+                                                        $query =mysqli_query($ntu_survey,$count);
+                                                        $r = mysqli_fetch_row($query);
+                                                       
+                                                        
+                                                        if ($result1=mysqli_query($ntu_survey, $choices)) {
+                                                            echo "<label>Choices:</label>";
+                                                            
+                                                            
+                                                            while ($row1=mysqli_fetch_array($result1)){ 
+                                                                echo "<div class='form-group'>
+                                                                    <div class='col-lg-8'>
+                                                                    <input type='text'class='form-control' value='" . $row1['cD'] . "'>
+                                                                    <input type='hidden' name='choice' value='" . $row1['cId'] . "'> 
+                                                                    </div></div>";
+
+                                                                echo "<br>";
+                                                                    
+                                                            }
                                                             
                                                         }
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        
-                                                        
-                                                    }else if ($i == 2){
-                                                        while($w != 3){
-                                                            echo "
-                                                            <div class='col-lg-8'> 
-                                                                <input type='hidden' name='choice[$choice][]' value='" . $row1['cId'] .  "'>
-                                                                <input type='text' class='form-control' name='newChoice' value='" . $row1['cD'] . "'> 
-                                                            </div>
-                                                            <div class='col-xs-1'>
-                                                                <button type='submit' class='btn btn-default btn-sm' name='submit' ><i class='fa fa-trash-o' aria-hidden='true'></i></button>
-                                                            </div> ";
-                                                            $w++;
-                                                            
-                                                        } 
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                    } 
-                                                }
-                                            }
-                                        ?>
-                                                 
-                                    </div>
+                                                    ?>
+
+                                                </div>
+                                                
+                                            </div>
+
+                                        </div>
+                                        <br>
                                     
-                                    <hr>
                                
                             <?php
-                                
+                                       
                                    }
-                                }else{
-                                     echo "<center><h3>There are no Questions!</h3></center>";
+                                    echo "<div class='row'>
+                                            <div class= 'col-lg-11'>
+                                                <a href='editSurvey.php?survey=$surveyId'><button type='button' class='btn btn-default btn-lg'  name='done'> Cancel </button></a>
+                                            </div>
+                                            
+                                            <div class= 'col-lg-1'>
+                                                <button type='submit' class='btn btn-default btn-lg'  name='done'> Submit</button>
+                                            </div>
+                                            
+                                         </div>";
+                                     
+                                    echo "</form>";
+                                    
+                                    if(isset($_POST['done'])){
+                                        
+                                    }
+                                        
                                 }
                             }
-                            ?> 
-                        
-                            <?php
-                                
-                                echo "<br>";
-                                echo "<div class='row'>
-                                        <div class='col-lg-10'>
-                                            <a href='editSurvey.php?survey=$s'><button type='button' class='btn btn-default btn-lg'>Back</button></a>
-                                        </div>
-                                        <div class='col-lg-1'>
-                                            <button type='submit' class='btn btn-default btn-lg' name='submit' ><strong> Submit Survey </strong></button>
-                                        </div>
-                                     </div>";
-                                echo "</form>";
-                                
-                                if(isset($_POST['submit'])){
-                                    
-                                    $num = $_POST['num'];
-                                    $q = $_POST['q'];
-                                    $ch= $_POST['choice'];
-                                    
-                                    
-                                }
-                               
                             ?>
+                            
                     </div>
+                   
                 </div>
-                <br>
-                <br>
+               
              </div>
             <!-- /.container-fluid -->
 

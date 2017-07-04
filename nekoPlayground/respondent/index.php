@@ -25,7 +25,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>NTU | Admin</title>
+    <title>NTU | Respondent</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -62,13 +62,8 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../respondent/index.php">
-                <ul class="list-inline" >
-                    <li><img src="../images/logo.png" alt="logo"></li>
-                    <li>NTU Respondent</li>
-                </ul>
-                
-                </a>
+                <a class="navbar-brand" href="../respondent/index.php"><img src="../images/logo.png" alt="logo"></a>
+                <a class="navbar-brand" href="../respondent/index.php">NTU Respondent</a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -177,23 +172,24 @@
         <div id="page-wrapper">
 
             <div class="container-fluid">
-
                 <!-- Page Heading -->
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
                             Welcome, 
                             <?php
-                                $email = $_SESSION['username'];
-                                $sql="SELECT firstname, lastname FROM user WHERE email = '$email'";                                       
-                                if ($result=mysqli_query($ntu_survey,$sql)){
-                                // Fetch one and one row
-                                    while ($row=mysqli_fetch_row($result)){
-                                        printf ("%s %s \n",$row[0],$row[1]);
+                                    $email = $_SESSION['username'];
+                                    $sql="SELECT firstname, lastname FROM user WHERE email = '$email'";
+                            if ($result=mysqli_query($ntu_survey,$sql)){
+                                          // Fetch one and one row
+                                          while ($row=mysqli_fetch_row($result))
+                                            {
+                                            printf ("%s %s \n",$row[0],$row[1]);
+                                            }
+                                          // Free result set
+                                        mysqli_free_result($result);
+                                        echo '!';
                                     }
-                                    // Free result set
-                                    mysqli_free_result($result);
-                                }
 
                             ?>
                         </h1>
@@ -204,7 +200,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h3 class="page-header">
-                           LIST OF SURVEYS
+                           Surveys Available:
                         </h3>
                     </div>
                 </div>
@@ -218,21 +214,21 @@
                                     <tr>
                                         <th class="text-center" style="width: 20%;" >Survey Title</th>
                                         <th class="text-center" style="width: 20%;" >Author</th>
-                                        <th class="text-center" style="width: 10%;">More</th>
+                                        <th class="text-center" style="width: 10%;">Get Started</th>
                                         
                                     </tr>
                                 </thead>
                                  <?php
-                                    $survey="SELECT surveyTitle, CONCAT(firstname,' ',lastname), surveyId FROM user INNER JOIN survey on userId  = author ORDER BY surveyId DESC" ;
+                                    $survey="SELECT surveyId, surveyTitle, CONCAT(firstname,' ',lastname) FROM user INNER JOIN survey on userId  = author ORDER BY surveyId DESC" ;
                                     
                                     
                                     if ($result=mysqli_query($ntu_survey, $survey)) {
                                         if(mysqli_num_rows($result) > 0) {
                                             while ($row=mysqli_fetch_row($result)) {
                                                 echo "<tr>";
-                                                echo "<td class='text-center'> $row[0] </td>";
                                                 echo "<td class='text-center'> $row[1] </td>";
-                                                echo "<td class='text-center'><a href='../respondent/survey.php' class='btn btn-default' role='button'>Answer Survey</a></td>";
+                                                echo "<td class='text-center'> $row[2] </td>";
+                                                echo "<td class='text-center'><a href='answer.php?surveytitle=$row[1]&surveyid=$row[0]' class='btn btn-default' role='button'>Answer Survey!</a></td>";
                                                 echo "</tr>";
                                             }
                                         }

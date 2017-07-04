@@ -216,6 +216,7 @@
                                         <th class="text-center" style="width: 12%;">Number of Responses</th>
                                         <th class="text-center" style="width: 15%;">Analyze Result</th>
                                         <th class="text-center" style="width: 11%;">Status</th>
+                                        <th class="text-center" style="width: 5%;">Display</th>
                                         <th class="text-center" style="width: 5%;">Delete</th>
                                         <th class="text-center" style="width: 5%;">Edit</th>
                                         
@@ -235,8 +236,9 @@
                                                 echo "<td class='text-center'> $row[0] </td>";
                                                 echo "<td class='text-center'> $row[1] </td>";
                                                 echo "<td class='text-center'>$row[2] </td>";
-                                                echo "<td class='text-center'><form action='survey.php' method='POST'><a href='analyze.php' class='btn btn-default' role='button' name='analyze'><i class='fa fa-bar-chart' aria-hidden='true'></i></a></form></td>";
+                                                echo "<td class='text-center'><form action='survey.php' method='POST'><a href='analyze.php?survey=$row[3]' class='btn btn-default' role='button' name='analyze'><i class='fa fa-bar-chart' aria-hidden='true'></i></a></form></td>";
                                                 echo "<td class='text-center'>$row[4]</td>";
+                                                echo "<td class='text-center'><form action='survey.php' method='POST'><a href='show.php?survey=$row[3]' class='btn btn-default' role='button' name='show'><i class='fa fa-file-text-o' aria-hidden='true'></i></a></form></td>";
                                                 echo "<td class='text-center'>
                                                         <div class='btn-group'>
                                                            <form action='survey.php' method='POST'>
@@ -287,17 +289,8 @@
                                             } else {
                                                 echo "Error: " . $sql . "<br>" . $ntu_survey->error;
                                             }
+                                         
                                             
-                                            $del ="DELETE FROM survey WHERE surveyId='$id'";
-                                            
-                                           
-                                            
-                                            
-                                            
-                                           
-                                           
-                                            
-                                        
                             
                                         }
                                     }

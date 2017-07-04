@@ -1,5 +1,6 @@
 <?php
     session_start();
+    ob_start();
 
     if ($_SESSION['loggedin'] == false ) {
     header('Location: ../login/index.php');
@@ -25,7 +26,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>NTU | Admin</title>
+    <title>NTU | Respondent</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -38,13 +39,6 @@
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 
 </head>
 
@@ -62,13 +56,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../respondent/index.php">
-                <ul class="list-inline" >
-                    <li><img src="../images/logo.png" alt="logo"></li>
-                    <li>NTU Respondent</li>
-                </ul>
                 
-                </a>
+                <a class="navbar-brand" href="../respondent/index.php"><img src="../images/logo.png" alt="logo"></a>
+                <a class="navbar-brand" href="../respondent/index.php">NTU Respondent</a>
+                
+                
+                
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -129,10 +122,10 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
                     <ul class="dropdown-menu alert-dropdown">
                         <li>
-                            <a href="#">New Respondent!<span class="label label-default">5</span></a>
+                            <a href="#">New Surveys!<span class="label label-default">5</span></a>
                         </li>
                         <li>
-                            <a href="#">New User!  <span class="label label-primary">17</span></a>
+                            <a href="#">Your profile<span class="label label-primary">17</span></a>
                         </li>
                         <li>
                             <a href="#">Alert Name <span class="label label-success">Alert Badge</span></a>
@@ -182,20 +175,12 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Welcome, 
+                            Survey Name:<strong>
                             <?php
-                                    $email = $_SESSION['username'];
-                                    $sql="SELECT firstname, lastname FROM user WHERE email = '$email'";                                        if ($result=mysqli_query($ntu_survey,$sql)){
-                                          // Fetch one and one row
-                                          while ($row=mysqli_fetch_row($result))
-                                            {
-                                            printf ("%s %s \n",$row[0],$row[1]);
-                                            }
-                                          // Free result set
-                                        mysqli_free_result($result);
-                                    }
-
-                            ?>
+                                $surveyTitle = $_GET['surveytitle'];
+                                $surveyId = $_GET['surveyid'];
+                                echo $surveyTitle;
+                            ?></strong> 
                         </h1>
                     </div>
                 </div>
@@ -204,46 +189,99 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h3 class="page-header">
-                           LIST OF SURVEYS
-                        </h3>
-                    </div>
-                </div>
-                <!-- /.row -->
-                
-                <div class="row">                    
-                    <div class="col-lg-12">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center" style="width: 20%;" >Survey Title</th>
-                                        <th class="text-center" style="width: 20%;" >Author</th>
-                                        <th class="text-center" style="width: 10%;">More</th>
-                                        
-                                    </tr>
-                                </thead>
-                                 <?php
-                                    $survey="SELECT surveyTitle, CONCAT(firstname,' ',lastname), surveyId FROM user INNER JOIN survey on userId  = author ORDER BY surveyId DESC" ;
-                                    
-                                    
-                                    if ($result=mysqli_query($ntu_survey, $survey)) {
-                                        if(mysqli_num_rows($result) > 0) {
-                                            while ($row=mysqli_fetch_row($result)) {
-                                                echo "<tr>";
-                                                echo "<td class='text-center'> $row[0] </td>";
-                                                echo "<td class='text-center'> $row[1] </td>";
-                                                echo "<td class='text-center'><a href='#' class='btn btn-default' role='button'>Answer Survey</a></td>";
-                                                echo "</tr>";
-                                            }
-                                        }
-                                    }
-                        
-                                ?>     
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                           Answer Questions:
+                            <?php 
+                                if(isset($msg)){
+                                    echo '<p>'.'<strong>'.$msg.'</strong>'.'</p>';
 
+                                }
+                            ?>
+            
+                        </h3>
+                        <?php
+                                                
+                            $questions = "select DISTINCT questionId , question.questionNo as 'num',question.questionDescription as 'des' from question inner join survey using (surveyId) WHERE survey.surveyId = '$surveyId'";
+                        
+                             
+                            
+                        
+                            if ($result=mysqli_query($ntu_survey, $questions)) {
+                                if(mysqli_num_rows($result) > 0) {
+                                    while ($row=mysqli_fetch_array($result)){
+                                        echo "<form action='answer.php?surveytitle=$surveyTitle&surveyid=$surveyId' method='POST' >";
+                        ?>            
+                                    <div class ='form-group'>
+                                        <label><strong><?php echo "" . $row['num'] . ""; ?> .</strong> <?php echo "" . $row['des'] . ""; ?> </label>
+                                        <br>
+                                        <?php
+                                            
+                                           
+                                            $temp = $row['questionId'];
+                                            $choice = $row['questionId'];
+                                            $choices = "SELECT questionId, choice.choiceId as 'cId', choice.choiceDescription as 'cD' FROM choice WHERE questionId ='$temp' ";
+                                            
+                                            if ($result1=mysqli_query($ntu_survey, $choices)) {
+                                                while ($row1=mysqli_fetch_array($result1)){ 
+                                                    
+                                                    echo "<div class='col-lg-8'><input type='radio' name='choice[$choice][]' value='" . $row1['cId'] .  "'>" . $row1['cD'] . " </input></div>"; 
+                                                   
+                                                    echo "<br>";
+                                                    
+                                                    
+                                                    
+                                                }
+                                            }
+                                        ?>
+                                                 
+                                    </div>
+                               
+                            <?php
+                                
+                                   }
+                                }else{
+                                     echo "<center><h3>There are no Questions!</h3></center>";
+                                }
+                            }
+                            ?> 
+                        
+                            <?php
+                                echo "<br>";
+                                echo "<div class='row'>
+                                        <div class='col-lg-10'>
+                                            <a href='../respondent/index.php'><button type='button' class='btn btn-default btn-lg'>Back</button></a>
+                                        </div>
+                                        <div class='col-lg-1'>
+                                            <button type='submit' class='btn btn-default btn-lg' name='submit' ><strong> Done Survey </strong></button>
+                                        </div>
+                                     </div>";
+                                echo "</form>";
+                                
+                                if(isset($_POST['submit'])){
+                                    
+                                    $ch = $_POST['choice'];
+                                    
+                                    foreach($ch as $c){
+                                        $sql = "INSERT INTO answer(surveyId, questionId, choiceId) VALUES ('$surveyId','$temp', '$c[0]')";                        
+                                        if ($ntu_survey->query($sql) === TRUE){
+
+                                            header("Location: index.php");
+
+                                        } else {
+                                            echo "Error: " . $sql . "<br>" . $ntu_survey->error;
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                               
+                            ?>
+                             
+                            
+                    
+                       
+                    </div>
+                </div>
+                <!--End of answer field -->
             </div>
             <!-- /.container-fluid -->
 

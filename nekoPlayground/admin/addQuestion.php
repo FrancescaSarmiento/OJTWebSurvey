@@ -32,44 +32,73 @@
             $choices[4] = $_POST['c4'];
             $choices[5] = $_POST['c5'];
             
-            $sql = "INSERT INTO `question` ( questionNo, questionDescription, surveyId) VALUES ('$questionNo','$questionDescription' , '$s1')";
-            
-            
-            
-            
-            
-            if ($ntu_survey->query($sql) === TRUE) {
-               
+              if($questionNo == '' || $questionDescription == ''){
                 
-                foreach($choices as $ch => $value ){
+                $msg="Question Number Field or Question Field is empty. Please Enter a value. ";
+                
+            }else{
+                if (empty($choices)) {
+    
+                     $msg="There are no choices! ";                           
+                                                    
+                }else if(count($choices) ==1 ){
                     
-                    if($value != ''){
-                        $query="SELECT questionId FROM question WHERE questionNo='$questionNo' ORDER BY questionId DESC";
-                        $result = mysqli_query($ntu_survey, $query) or die($ntu_survey->error);;
-                        $row = $result->fetch_assoc();
-                        $qId = $row["questionId"];
-                        
-                        $sql1 = "INSERT into choice (choiceDescription, questionId) VALUES ('$value','$qId')";
-                    
-                        if ($ntu_survey->query($sql1) === TRUE) {
-                        } else {
-                            echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
-                        }
-                        
+                    $msg="Insufficient input for choice!";
+                }else{
+                    $n="SELECT questionNo from question inner join survey using(surveyId) where survey.surveyId='$s1' ORDER BY questionNo DESC LIMIT 1";
+                    $r = mysqli_query($ntu_survey, $n);
+                    $row1 = $r->fetch_assoc();
+                    $number = $row1["questionNo"];
+
+                    if($number ==  0 || $number ==  null ){
+
+                            $number = 0;
+
                     }
+
+                    if($questionNo == $number){
+                        $msg = " ".$questionNo."  is already used!";
+
+                    }else{
+                        $sql = "INSERT INTO `question` ( questionNo, questionDescription, surveyId) VALUES ('$questionNo','$questionDescription' , '$s1')";
+
+
+
+
+
+                        if ($ntu_survey->query($sql) === TRUE) {
+
+
+                            foreach($choices as $ch => $value ){
+
+                                if($value != ''){
+                                    $query="SELECT questionId FROM question WHERE questionNo='$questionNo' ORDER BY questionId DESC";
+                                    $result = mysqli_query($ntu_survey, $query) or die($ntu_survey->error);;
+                                    $row = $result->fetch_assoc();
+                                    $qId = $row["questionId"];
+
+                                    $sql1 = "INSERT into choice (choiceDescription, questionId) VALUES ('$value','$qId')";
+
+                                    if ($ntu_survey->query($sql1) === TRUE) {
+                                    } else {
+                                        echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
+                                    }
+
+                                }
+
+
+
+                            }
+                                $msg = "Question has been added successfully!";  
+
+                        } else {
+                                echo "Error: " . $sql . "<br>" . $ntu_survey->error;
+                        }
+
+                    }
+                }
                     
-                
-                                                                                                                                  
-            }
-                $msg = "Question has been added successfully!";  
-                        
-            } else {
-                echo "Error: " . $sql . "<br>" . $ntu_survey->error;
-            }
-            
-            
-                                            
-           
+              }
                                             
         }
   
@@ -292,12 +321,35 @@
                 <div class="row">
                     
                     <form role="form" method="POST" action="<?php echo "addQuestion.php?survey=$s" ?>">
+                        
                             <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <a href="<?php echo "editSurvey.php?survey=$s";?>"><button type="button" class="btn btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i>Back</button></a>
+                                    </div>
+                                </div>
+                                <br>
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="form-group">
+                                            <?php
+                                                $surveyId = $_GET['survey'];
+                                                $n="SELECT questionNo from question inner join survey using(surveyId) where survey.surveyId='$surveyId' ORDER BY questionNo DESC LIMIT 1";
+                                                $r = mysqli_query($ntu_survey, $n);
+                                                $row1 = $r->fetch_assoc();
+                                                $number = $row1["questionNo"];
+
+                                                if($number ==  0 || $number ==  null ){
+
+                                                        $number = 0 + 1;
+                                                        
+
+                                                }else{
+                                                    $number++;
+                                                }
+                                            ?>
                                             <label >Question Number</label>
-                                            <input type="text" class="form-control" name="questionNo" placeholder="Enter number" required>
+                                            <input type="text" class="form-control" name="questionNo" value="<?php echo "$number";?>">
                                             <input type="hidden" name="surveyId">
                                             <input type="hidden" name="questionId">
                                         </div>
@@ -308,7 +360,7 @@
                                     <div class="col-lg-7">
                                         <div class="form-group">
                                             <label >Question</label>
-                                            <input type="text" class="form-control" name="questionDescription" placeholder="Enter your Question"required>
+                                            <input type="text" class="form-control" name="questionDescription" placeholder="Enter your Question">
                                         </div>
                                     </div>
                                 </div>
@@ -321,7 +373,7 @@
                                 <div class="row">
                                     <div class="col-lg-7">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="c1" placeholder="Enter a Choice"required>
+                                            <input type="text" class="form-control" name="c1" placeholder="Enter a Choice">
                                         </div>
                                     </div>
                                 </div>
@@ -329,7 +381,7 @@
                                 <div class="row">
                                     <div class="col-lg-7">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="c2" placeholder="Enter a Choice"required>
+                                            <input type="text" class="form-control" name="c2" placeholder="Enter a Choice">
                                         </div>
                                     </div>
                                 </div>
@@ -361,11 +413,11 @@
                                 
                                 
                                 <div class ="row">
-                
-                                    <div class="col-lg-5">
-                                        <button type="submit" class="btn btn-default btn-md" name="questionAdd">Add Question </button>
+                                    
+                                    <div class="col-lg-9">
+                                        <button type="submit" class="btn btn-default " name="questionAdd">Add Question </button>
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <?php
                                             if(isset($_POST['surveySubmit'])){
                                                 
@@ -389,7 +441,7 @@
                                                 
                                             }
                                         ?>
-                                        <button type="submit" class="btn btn-default btn-md" name="surveySubmit">Submit Survey</button>
+                                        <button type="submit" class="btn btn-default " name="surveySubmit">Submit Survey</button>
                                     </div>
                                 </div>  
                         
