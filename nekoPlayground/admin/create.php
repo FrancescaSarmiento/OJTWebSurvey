@@ -2,7 +2,11 @@
     session_start();
 
     if ($_SESSION['loggedin'] == false ) {
-    header('Location: ../login/index.php');
+        header('Location: ../login/index.php');
+    }else{
+        if($_SESSION['type'] != 'admin'){
+            header('Location: ../login/index.php');
+        }
     }
 ?>
 
@@ -29,17 +33,40 @@
         
         
         
-        $result = mysqli_query($ntu_survey, "SELECT * FROM survey WHERE surveyTitle = '$surveyTitle'");
-        if(mysqli_num_rows($result) > 0) {
-            $eMsg = "Title is already taken!";                                     
-            mysqli_free_result($result);
-        } else {
+        $temp =  "SELECT surveyTitle FROM survey WHERE surveyTitle = '$surveyTitle'";
+        $rTemp = mysqli_query($ntu_survey, $temp);
+        $rowTemp = $result->fetch_assoc();
+        $s = $rowTemp["surveyTitle"];
+        
+        if($s == $surveyTitle){
+            $eMsg = "Title is already taken!"; 
+            
+        }else{
             $sql = "INSERT INTO survey (surveyTitle, userRequired, dateCreated,author) VALUES ('$surveyTitle','$user',now(), '$userId')";                        
             if ($ntu_survey->query($sql) === TRUE){ 
-                $_SESSION['surveyTitle'] = $surveyTitle;  
-                header("Location: ../admin/question.php");
+                $_SESSION['surveyTitle'] = $surveyTitle;                           
+                    
+                $email = $_SESSION['username'];
+                $query="SELECT userId from user where email='$email'";
+                $result = mysqli_query($ntu_survey, $query);
+                $row = $result->fetch_assoc();
+                $userId = $row["userId"];
+                                                
+                $date = date('Y-m-d H:i:s');
+                $sql1 = "INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Survey Titled ". "$surveyTitle" ." has been Created','$userId')";  
+                    
+                if ($ntu_survey->query($sql1) === TRUE) {
+                    header("Location: ../admin/question.php");
+                } else {
+                    echo "Error: " . $sql1 . "<br>" . $ntu_survey->error;
+                }
+                        
+                                                
+                                                
+                                                
+                                            
             } else {
-                echo "Error: " . $sql . "<br>" . $ntu_survey->error;
+                $eMsg = "Please don't use a Single Qoutaion Mark (') for Survey Title";
             }
         }
     }

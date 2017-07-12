@@ -1,8 +1,12 @@
 <?php
     session_start();
     if ($_SESSION['loggedin'] == false ) {
-    header('Location: ../login/index.php');
-    } 
+        header('Location: ../login/index.php');
+    }else{
+        if($_SESSION['type'] != 'admin'){
+            header('Location: ../login/index.php');
+        }
+    }
 ?>
 <?php
 
@@ -25,16 +29,11 @@
 
     <title>NTU | Admin</title>
 
-    <!-- Bootstrap Core CSS -->
+     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/sb-admin.css" rel="stylesheet">
-
-    <!-- Morris Charts CSS -->
-    <link href="css/plugins/morris.css" rel="stylesheet">
-    
-    <link href="css/style.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -203,56 +202,173 @@
                 </div>
                 
                 <div class="row">
-                    <div class="col=lg-12">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center" style="width: 20%;" ><strong>Employee Number</strong></th>
-                                        <th class="text-center" style="width: 20%;" ><strong>Name</strong></th>
-                                        <th class="text-center" style="width: 20%;" ><strong>E-mail</strong></th>
-                                        <th class="text-center" style="width: 15%;" ><strong>Department</strong></th>
-                                        <th class="text-center" style="width: 10%;" ><strong>Team</strong></th>
-                                        <th class="text-center" style="width: 10%;" ><strong>Role</strong></th>
-                                        <th class="text-center" style="width: 10%;" ><strong></strong></th>
+                    <div class="col-lg-12">
+                        <ul  class="nav nav-tabs  ">
+                            <li class="active" > <a href="#all" data-target="#all" data-toggle="tab"><strong>All</strong></a>  </li>
+                            <li  ><a  href="#admin" data-target="#admin" data-toggle="tab"><strong>Admin</strong></a> <li> 
+                            <li  ><a  href="#respondent" data-target="#respondent" data-toggle="tab"><strong>Respondent</strong></a> <li>
+                        </ul> 
+                        <div class="tab-content clearfix">
+                            <div class="tab-pane fade in active" id="all">
+                                <div class="col-lg-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="width: 20%;" ><strong>Employee Number</strong></th>
+                                                    <th class="text-center" style="width: 20%;" ><strong>Name</strong></th>
+                                                    <th class="text-center" style="width: 20%;" ><strong>E-mail</strong></th>
+                                                    <th class="text-center" style="width: 15%;" ><strong>Department</strong></th>
+                                                    <th class="text-center" style="width: 10%;" ><strong>Team</strong></th>
+                                                    <th class="text-center" style="width: 10%;" ><strong>Role</strong></th>
+                                                    <th class="text-center" style="width: 10%;" ><strong></strong></th>
 
 
-                                    </tr>
-                                </thead>
-                                
-                               
-                                    <?php
+                                                </tr>
+                                            </thead>
 
-                                        $user="SELECT empNum, CONCAT(firstName, ' ', lastName)'name', email, department, team, type, userId FROM user ORDER BY name";
 
-                                        if ($result=mysqli_query($ntu_survey, $user)) {
-                                            if(mysqli_num_rows($result) > 0) {
-                                               while ($row=mysqli_fetch_assoc($result)) {
-                                                    echo "<tr>";
-                                                    echo "<td class='text-center'>".$row['empNum']."</td>";
-                                                    echo "<td class='text-center'>".$row['name']."</td>";
-                                                    echo "<td class='text-center'>".$row['email']."</td>";
-                                                    echo "<td class='text-center'>".$row['department']."</td>";
-                                                    echo "<td class='text-center'>".$row['team']."</td>";
-                                                    echo "<td class='text-center'>".$row['type']."</td>";
-                                                    echo "<td class='text-center'>
-                                                        <form action='manage.php' method='POST'>
-                                                            <a href='editAccount.php?id=". $row['userId'] ."'><button type='button' class='btn btn-default' name='editA'><i class='fa fa-pencil' aria-hidden='true'></i></button></a>
-                                                        </form>
-                                                    </td>";
-                                                    
-                                                    echo "</tr>";
-                                                }
-                                            }
-                                        }
-                        
-                                    ?>
-                               
-                            </table>
-                        </div>
-                    </div>    
-                    
+                                                <?php
+
+                                                    $user="SELECT empNum, CONCAT(firstName, ' ', lastName)'name', email, department, team, type, userId FROM user ORDER BY type ASC, lastname ASC ";
+
+                                                    if ($result=mysqli_query($ntu_survey, $user)) {
+                                                        if(mysqli_num_rows($result) > 0) {
+                                                           while ($row=mysqli_fetch_assoc($result)) {
+                                                                echo "<tr>";
+                                                                echo "<td class='text-center'>".$row['empNum']."</td>";
+                                                                echo "<td class='text-center'>".$row['name']."</td>";
+                                                                echo "<td class='text-center'>".$row['email']."</td>";
+                                                                echo "<td class='text-center'>".$row['department']."</td>";
+                                                                echo "<td class='text-center'>".$row['team']."</td>";
+                                                                echo "<td class='text-center'>".$row['type']."</td>";
+                                                                echo "<td class='text-center'>
+                                                                    <form action='manage.php' method='POST'>
+                                                                        <a href='editAccount.php?id=". $row['userId'] ."'><button type='button' class='btn btn-default' name='editA'><i class='fa fa-pencil' aria-hidden='true'></i></button></a>
+                                                                    </form>
+                                                                </td>";
+
+                                                                echo "</tr>";
+                                                            }
+                                                        }
+                                                    }
+
+                                                ?>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="tab-pane fade  "id="admin">
+                                 <div class="col-lg-12">
+                                     <div class="table-responsive">
+                                        <table class="table table-bordered table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="width: 20%;" ><strong>Employee Number</strong></th>
+                                                    <th class="text-center" style="width: 20%;" ><strong>Name</strong></th>
+                                                    <th class="text-center" style="width: 20%;" ><strong>E-mail</strong></th>
+                                                    <th class="text-center" style="width: 15%;" ><strong>Department</strong></th>
+                                                    <th class="text-center" style="width: 10%;" ><strong>Team</strong></th>
+                                                    <th class="text-center" style="width: 10%;" ><strong>Role</strong></th>
+                                                    <th class="text-center" style="width: 10%;" ><strong></strong></th>
+
+
+                                                </tr>
+                                            </thead>
+
+
+                                                <?php
+
+                                                    $user="SELECT empNum, CONCAT(firstName, ' ', lastName)'name', email, department, team, type, userId FROM user WHERE type = 'Admin' ORDER BY  lastname ASC ";
+
+                                                    if ($result=mysqli_query($ntu_survey, $user)) {
+                                                        if(mysqli_num_rows($result) > 0) {
+                                                           while ($row=mysqli_fetch_assoc($result)) {
+                                                                echo "<tr>";
+                                                                echo "<td class='text-center'>".$row['empNum']."</td>";
+                                                                echo "<td class='text-center'>".$row['name']."</td>";
+                                                                echo "<td class='text-center'>".$row['email']."</td>";
+                                                                echo "<td class='text-center'>".$row['department']."</td>";
+                                                                echo "<td class='text-center'>".$row['team']."</td>";
+                                                                echo "<td class='text-center'>".$row['type']."</td>";
+                                                                
+                                                                echo "<td class='text-center'>
+                                                                    <form action='manage.php' method='POST'>
+                                                                        <a href='editAccount.php?id=". $row['userId'] ."'><button type='button' class='btn btn-default' name='editA'><i class='fa fa-pencil' aria-hidden='true'></i></button></a>
+                                                                    </form>
+                                                                </td>";
+
+                                                                echo "</tr>";
+                                                            }
+                                                        }
+                                                    }
+
+                                                ?>
+
+                                        </table>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            
+                            <div class="tab-pane fade  "id="respondent">
+                                 <div class="col-lg-12">
+                                      <div class="table-responsive">
+                                        <table class="table table-bordered table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="width: 20%;" ><strong>Employee Number</strong></th>
+                                                    <th class="text-center" style="width: 20%;" ><strong>Name</strong></th>
+                                                    <th class="text-center" style="width: 20%;" ><strong>E-mail</strong></th>
+                                                    <th class="text-center" style="width: 15%;" ><strong>Department</strong></th>
+                                                    <th class="text-center" style="width: 10%;" ><strong>Team</strong></th>
+                                                    <th class="text-center" style="width: 10%;" ><strong>Role</strong></th>
+                                                    <th class="text-center" style="width: 10%;" ><strong></strong></th>
+
+
+                                                </tr>
+                                            </thead>
+
+
+                                                <?php
+
+                                                    $user="SELECT empNum, CONCAT(firstName, ' ', lastName)'name', email, department, team, type, userId FROM user WHERE type = 'Respondent' ORDER BY  lastname ASC ";
+
+                                                    if ($result=mysqli_query($ntu_survey, $user)) {
+                                                        if(mysqli_num_rows($result) > 0) {
+                                                           while ($row=mysqli_fetch_assoc($result)) {
+                                                                echo "<tr>";
+                                                                echo "<td class='text-center'>".$row['empNum']."</td>";
+                                                                echo "<td class='text-center'>".$row['name']."</td>";
+                                                                echo "<td class='text-center'>".$row['email']."</td>";
+                                                                echo "<td class='text-center'>".$row['department']."</td>";
+                                                                echo "<td class='text-center'>".$row['team']."</td>";
+                                                                echo "<td class='text-center'>".$row['type']."</td>";
+                                                                echo "<td class='text-center'>
+                                                                    <form action='manage.php' method='POST'>
+                                                                        <a href='editAccount.php?id=". $row['userId'] ."'><button type='button' class='btn btn-default' name='editA'><i class='fa fa-pencil' aria-hidden='true'></i></button></a>
+                                                                    </form>
+                                                                </td>";
+
+                                                                echo "</tr>";
+                                                            }
+                                                        }
+                                                    }
+
+                                                ?>
+
+                                        </table>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
                 </div>
+                
+                
                 
             </div>
             <!-- /.container-fluid -->

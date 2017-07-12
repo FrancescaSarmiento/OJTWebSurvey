@@ -2,8 +2,12 @@
     session_start();
     ob_start();
     if ($_SESSION['loggedin'] == false ) {
-    header('Location: ../login/index.php');
-    } 
+        header('Location: ../login/index.php');
+    }else{
+        if($_SESSION['type'] != 'admin'){
+            header('Location: ../login/index.php');
+        }
+    }
 ?>
 <?php
 
@@ -31,8 +35,6 @@
 
     <!-- Custom CSS -->
     <link href="css/sb-admin.css" rel="stylesheet">
-    
-    <link href="css/style.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -188,9 +190,12 @@
                 <!-- Page Heading -->
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header head">
-                            Surveys
-                        </h1>
+                        <div class="row">        
+                            <h1 class="page-header head">
+                                Surveys
+                            </h1>
+                        </div>
+                        
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-dashboard"></i>  <a href="index.php">Dashboard</a>
@@ -203,10 +208,44 @@
                 </div>
                 
                 <!-- /.row -->
+<!--
+                <div class="row">
+                    <div class="col-lg-9">
+                    </div>
+                    <div class="col-lg-1">
+                    </div>
+                    <div class="col-sm-2">
+                        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
+                            <button type="submit" class="btn btn-danger btn-lg" name="truncate"><i class='fa fa-trash-o' aria-hidden='true'> </i> CLEAR ALL  </button>
+                        </form>
+                        <?php 
+                            if(isset($_POST['truncate'])){
+                                $tableSurvey = mysqli_query($ntu_survey,"TRUNCATE TABLE survey") or die(mysqli_error($ntu_survey));
+                                $tableQuestion = mysqli_query($ntu_survey,"TRUNCATE TABLE question") or die(mysqli_error($ntu_survey));
+                                $tableChoice = mysqli_query($ntu_survey,"TRUNCATE TABLE choice") or die(mysqli_error($ntu_survey));
+                                $tableAnswer = mysqli_query($ntu_survey,"TRUNCATE TABLE answer") or die(mysqli_error($ntu_survey));
+                                
+                            }
+                        ?>
+                    </div>
+                    
+                </div>
+-->
                 <br>
                 
                 <div class="row">                    
                     <div class="col-lg-12">
+                        
+                                 <?php
+                                   
+                                    $survey="SELECT survey.surveyTitle, CONCAT(firstname,' ',lastname),  ifnull(COUNT(response.surveyId),0), survey.surveyId, survey.status FROM user RIGHT JOIN survey on author = userId LEFT JOIN response using(surveyId) GROUP BY survey.surveyTitle, survey.author, survey.surveyId, survey.status ORDER BY survey.surveyId DESC";
+                                    
+                                    
+                                    
+                                    
+                                    if ($result=mysqli_query($ntu_survey, $survey)) {
+                                        if(mysqli_num_rows($result) > 0) {
+                                    ?> 
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-striped">
                                 <thead>
@@ -222,30 +261,37 @@
                                         
                                     </tr>
                                 </thead>
-                                 <?php
-                                   
-                                    $survey="SELECT survey.surveyTitle, CONCAT(firstname,' ',lastname),  ifnull(COUNT(response.surveyId),0), survey.surveyId, survey.status FROM user RIGHT JOIN survey on author = userId LEFT JOIN response using(surveyId) GROUP BY survey.surveyTitle, survey.author, survey.surveyId, survey.status ORDER BY survey.surveyId DESC" ;
-                                    
-                                    
-                                    
-                                    
-                                    if ($result=mysqli_query($ntu_survey, $survey)) {
-                                        if(mysqli_num_rows($result) > 0) {
+                        
+                                    <?php
                                             while ($row=mysqli_fetch_row($result)) {
+                                                $count=$row[2];
                                                 echo "<tr>";
                                                 echo "<td class='text-center'> $row[0] </td>";
                                                 echo "<td class='text-center'> $row[1] </td>";
                                                 echo "<td class='text-center'>$row[2] </td>";
-                                                echo "<td class='text-center'><form action='survey.php' method='POST'><a href='analyze.php?survey=$row[3]' class='btn btn-default' role='button' name='analyze'><i class='fa fa-bar-chart' aria-hidden='true'></i></a></form></td>";
+                                                
+                                    ?>
+                                    <?php   
+                                                if($count==0){
+                                                    echo "<td class='text-center'><form action='survey.php' method='POST'><a href='analyze.php?survey=$row[3]' class='btn btn-primary' role='button' name='analyze' disabled><i class='fa fa-bar-chart' aria-hidden='true'></i></a></form></td>";
+                                                    
+                                                }else{
+                                                    echo "<td class='text-center'><form action='survey.php' method='POST'><a href='analyze.php?survey=$row[3]' class='btn btn-primary' role='button' name='analyze'><i class='fa fa-bar-chart' aria-hidden='true'></i></a></form></td>";
+                                                }
+                                
+                                    ?>
+                                    
+                                                
+                                <?php
                                                 echo "<td class='text-center'>$row[4]</td>";
-                                                echo "<td class='text-center'><form action='survey.php' method='POST'><a href='show.php?survey=$row[3]' class='btn btn-default' role='button' name='show'><i class='fa fa-file-text-o' aria-hidden='true'></i></a></form></td>";
+                                                echo "<td class='text-center'><form action='survey.php' method='POST'><a href='show.php?survey=$row[3]' class='btn btn-info' role='button' name='show'><i class='fa fa-file-text-o' aria-hidden='true'></i></a></form></td>";
                                                 echo "<td class='text-center'>
                                                         <div class='btn-group'>
                                                            <form action='survey.php' method='POST'>
                                                            
                                                                 <input type='hidden' name='sId' value='$row[3]'>
                                                                
-                                                               <button type='submit' class='btn btn-default' name='del'><i class='fa fa-trash-o' aria-hidden='true'></i></button>
+                                                               <button type='submit' class='btn btn-danger' name='del'><i class='fa fa-trash-o' aria-hidden='true'></i></button>
                                                                  
                                                                
                                                             </form> 
@@ -263,6 +309,11 @@
                                                
 
                                             }
+                                        }else{
+                                            
+                                            echo "Meow Create";
+                                            
+                                            
                                         }
                                         if (isset($_POST['del'])) {
                                             $id = $_POST['sId'];

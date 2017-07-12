@@ -2,19 +2,23 @@
     session_start();
 
     if ($_SESSION['loggedin'] == false ) {
-    header('Location: ../login/index.php');
+        header('Location: ../login/index.php');
+    }else{
+        if($_SESSION['type'] != 'admin'){
+            header('Location: ../login/index.php');
+        }
     }
 ?>
 
 <?php
-//Connect to MySQL Database
-$conn = mysqli_connect("localhost","root","","ntu_survey");
 
-// Test Connection
-if(mysqli_connect_errno()){
-	echo 'Failed to connect to MySQL: '.$mysqli_connect_error();	
-}
+        $ntu_survey = new mysqli("localhost", "root", "", "ntu_survey");
+        // Check connection
+        if ($ntu_survey->connect_error) {
+            die("Connection failed: " . $ntu_survey->connect_error);
+        }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -68,34 +72,28 @@ if(mysqli_connect_errno()){
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
-                    <ul class="dropdown-menu alert-dropdown">
-                        <li>
-                            <a href="#">New Respondent!<span class="label label-default">5</span></a>
-                        </li>
-                        <li>
-                            <a href="#">New User!  <span class="label label-primary">17</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-success">Alert Badge</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-info">Alert Badge</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-warning">Alert Badge</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-danger">Alert Badge</span></a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">View All</a>
-                        </li>
-                    </ul>
+                
+                 <li >
+                     <a href="#" ></a>
+                     <strong>WELCOME, </strong> 
+                     <em><?php
+                                $email = $_SESSION['username'];
+                                $sql="SELECT firstname, lastname FROM user WHERE email = '$email'";
+                                if ($result=mysqli_query($ntu_survey,$sql)){
+                                    // Fetch one and one row
+                                    while ($row=mysqli_fetch_row($result)){
+                                        printf ("%s %s \n",$row[0],$row[1]);
+                                    }
+                                         // Free result set
+                                    mysqli_free_result($result);
+                                        echo '!';
+                                    }
+
+                    ?></em>
+                    
                 </li>
-                <li class="dropdown">
+               
+                <li>
                     <a href="../landing/index.php" name="Logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                     <?php
                         if(isset($_POST['Logout'])) {
@@ -104,6 +102,7 @@ if(mysqli_connect_errno()){
                         } 
                     ?>
                 </li>
+               
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -147,25 +146,22 @@ if(mysqli_connect_errno()){
                 </div>
                 <!-- /.row -->
 
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="alert alert-info alert-dismissable">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <i class="fa fa-info-circle"></i>  <strong>Create a new survey?</strong> Try out <a href="http://startbootstrap.com/template-overviews/sb-admin-2" class="alert-link">NTU Surveys</a> for additional features!
-                        </div>
-                    </div>
-                </div>
-                <!-- /.row -->
+        
+               
 
                 <div class="row">
                     <?php
-                        $latestSurvey = "SELECT surveyTitle,surveyId FROM survey ORDER BY surveyId DESC limit 1";
-                        $c = "SELECT ifnull(COUNT(response.surveyId),0) c FROM survey JOIN response using(surveyId)  where surveyId='$latestSurvey' ";
+                        $query = mysqli_query($ntu_survey, "SELECT survey.surveyTitle 'sT',  ifnull(COUNT(response.surveyId),0) 'num', survey.surveyId 'id' FROM user RIGHT JOIN survey on author = userId LEFT JOIN response using(surveyId) GROUP BY survey.surveyTitle, survey.author, survey.surveyId, survey.status ORDER BY survey.surveyId DESC LIMIT 1");
+                    
+                        $row = $query->fetch_assoc();
+                        $sT = $row["sT"];
+                        $c = $row["num"];
+                        $id = $row["id"];
                       
                       
                     
                     ?>
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-lg-4 col-md-7">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <div class="row">
@@ -173,12 +169,13 @@ if(mysqli_connect_errno()){
                                         <i class="fa fa-comments fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">26</div>
-                                        <div>Responses</div>
+                                        <div class="huge"><?php echo "$c";?></div>
+                                        <div><small>Responses</small></div>
+                                        <div><strong>Survey Title: </strong><em><?php echo "$sT";?></em></div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="analyze.php">
+                            <a href="<?php echo "analyze.php?survey=$id";?>">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -187,20 +184,31 @@ if(mysqli_connect_errno()){
                             </a>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-green">
+                    
+                    <?php
+                        $queryUser = mysqli_query($ntu_survey, "SELECT ifnull(COUNT(userId),0) 'numU' FROM user WHERE type ='respondent' ");
+                    
+                        $rowU = $queryUser->fetch_assoc();
+                        $cU = $rowU["numU"];
+                        
+                    
+                    ?>
+                    <div class="col-lg-4 col-md-7">
+                        <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <i class="fa fa-tasks fa-5x"></i>
+                                        <i class="fa fa-user fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">12</div>
-                                        <div>New Respondents!</div>
+                                        <div class="huge"><?php echo "$cU";?></div>
+                                        <br>
+                                        <div>Number of Respondents</div>
+                                        
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
+                            <a href="manage.php">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -209,26 +217,33 @@ if(mysqli_connect_errno()){
                             </a>
                         </div>
                     </div>
-                
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-red">
+                    
+                    
+                    
+                    
+                    <?php
+                        $querySurvey = mysqli_query($ntu_survey, "SELECT ifnull(COUNT(surveyId),0) 'numS' FROM survey ");
+                        $rowS = $querySurvey->fetch_assoc();
+                        $cS = $rowS["numS"];
+                        
+                    
+                    ?>
+                    <div class="col-lg-4 col-md-7">
+                        <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <i class="fa fa-support fa-5x"></i>
+                                        <i class="fa fa-file fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">
-                                            <?php
-                                                $count="SELECT ifnull(COUNT(survey.surveyId),0) as 'c' FROM survey"; 
-                                                echo " ";
-                                            ?>
-                                        </div>
-                                        <div>Noble Trend Surveys!</div>
+                                        <div class="huge"><?php echo "$cS";?></div>
+                                        <br>
+                                        <div>Number of Surveys</div>
+                                        
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
+                            <a href="survey.php">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -237,160 +252,19 @@ if(mysqli_connect_errno()){
                             </a>
                         </div>
                     </div>
+                    
+                    
                 </div>
-                <!-- /.row -->
-
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-bar-chart-o fa-fw"></i> Area Chart</h3>
-                            </div>
-                            <div class="panel-body">
-                                <div id="morris-area-chart"></div>
-                            </div>
-                        </div>
+                        <h3><strong>Result of the Latest Survey</strong></h3>
+                        
+                        
+                        
+                        
                     </div>
                 </div>
-                <!-- /.row -->
-
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-long-arrow-right fa-fw"></i> Donut Chart</h3>
-                            </div>
-                            <div class="panel-body">
-                                <div id="morris-donut-chart"></div>
-                                <div class="text-right">
-                                    <a href="#">View Details <i class="fa fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Tasks Panel</h3>
-                            </div>
-                            <div class="panel-body">
-                                <div class="list-group">
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">just now</span>
-                                        <i class="fa fa-fw fa-calendar"></i> Calendar updated
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">4 minutes ago</span>
-                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">23 minutes ago</span>
-                                        <i class="fa fa-fw fa-truck"></i> Order 392 shipped
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">46 minutes ago</span>
-                                        <i class="fa fa-fw fa-money"></i> Invoice 653 has been paid
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">1 hour ago</span>
-                                        <i class="fa fa-fw fa-user"></i> A new user has been added
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">2 hours ago</span>
-                                        <i class="fa fa-fw fa-check"></i> Completed task: "pick up dry cleaning"
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">yesterday</span>
-                                        <i class="fa fa-fw fa-globe"></i> Saved the world
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">two days ago</span>
-                                        <i class="fa fa-fw fa-check"></i> Completed task: "fix error on sales page"
-                                    </a>
-                                </div>
-                                <div class="text-right">
-                                    <a href="#">View All Activity <i class="fa fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-money fa-fw"></i> Transactions Panel</h3>
-                            </div>
-                            <div class="panel-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Order #</th>
-                                                <th>Order Date</th>
-                                                <th>Order Time</th>
-                                                <th>Amount (USD)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>3326</td>
-                                                <td>10/21/2013</td>
-                                                <td>3:29 PM</td>
-                                                <td>$321.33</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3325</td>
-                                                <td>10/21/2013</td>
-                                                <td>3:20 PM</td>
-                                                <td>$234.34</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3324</td>
-                                                <td>10/21/2013</td>
-                                                <td>3:03 PM</td>
-                                                <td>$724.17</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3323</td>
-                                                <td>10/21/2013</td>
-                                                <td>3:00 PM</td>
-                                                <td>$23.71</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3322</td>
-                                                <td>10/21/2013</td>
-                                                <td>2:49 PM</td>
-                                                <td>$8345.23</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3321</td>
-                                                <td>10/21/2013</td>
-                                                <td>2:23 PM</td>
-                                                <td>$245.12</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3320</td>
-                                                <td>10/21/2013</td>
-                                                <td>2:15 PM</td>
-                                                <td>$5663.54</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3319</td>
-                                                <td>10/21/2013</td>
-                                                <td>2:13 PM</td>
-                                                <td>$943.45</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="text-right">
-                                    <a href="#">View All Transactions <i class="fa fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.row -->
-
+                
             </div>
             <!-- /.container-fluid -->
 

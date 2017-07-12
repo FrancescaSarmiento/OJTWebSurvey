@@ -2,7 +2,11 @@
     session_start();
     ob_start();
     if ($_SESSION['loggedin'] == false ) {
-    header('Location: ../login/index.php');
+        header('Location: ../login/index.php');
+    }else{
+        if($_SESSION['type'] != 'admin'){
+            header('Location: ../login/index.php');
+        }
     } 
 ?>
 <?php
@@ -284,18 +288,18 @@
                                             "<div class='row'>
                                                     <div class='form-group'>
                                                         <div class='col-md-6'>
-                                                            <label><strong>User Role: <strong> <em>".$row['type']."</em> </label>
-                                                            <div class'col-xs-2'>                                               
-                                                                <select class='form-control' name='optR' style='width:auto;'>
-                                                                    <option disabled value='' selected><center>-------------select an option-------------</center><option>
-                                                                    <option >Admin</option>
-                                                                    <option >Supervisor</option>
-                                                                    <option>Respondent</option>
-                                                                </select>
-                                                            </div>
+                                                            <label><strong>User Role: <strong> <em>".$row['type']."</em> </label>   
                                                        </div>    
                                                     </div>
                                                  </div>";
+                                        echo "<div class'col-xs-2'>                                               
+                                                <select class='form-control' name='optR' style='width:auto;'>
+                                                    <option disabled value='' selected>-------------select an option-------------</option>
+                                                    <option >Admin</option>
+                                                    <option >Supervisor</option>
+                                                    <option>Respondent</option>
+                                                 </select>
+                                              </div>";
                                         echo "<br>";
                                         echo "<br>";
                                         echo "<br>";

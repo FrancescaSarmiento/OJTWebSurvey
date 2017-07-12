@@ -1,7 +1,11 @@
 <?php
     session_start();
     if ($_SESSION['loggedin'] == false ) {
-    header('Location: ../login/index.php');
+        header('Location: ../login/index.php');
+    }else{
+        if($_SESSION['type'] != 'admin'){
+            header('Location: ../login/index.php');
+        }
     } 
 ?>
 <?php
@@ -29,13 +33,12 @@
 
     <title>NTU | Admin</title>
 
-    <!-- Bootstrap Core CSS -->
+   
+     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/sb-admin.css" rel="stylesheet">
-    
-    <link href="css/style.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -207,7 +210,12 @@
                 </div>
                 
                 <!-- /.row -->
-                <!-- Flot Charts -->
+                <div class="row">
+                    <div class="col-lg-12">
+                       <a href="../admin/survey.php"><button type="button" class="btn btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i>Back</button></a>
+                    </div>
+                </div>
+                
                 <div class="row">
                     <div class="col-lg-12">
                         <h2 class="page-header">Summary Result of Surveys</h2>
@@ -215,124 +223,85 @@
                     </div>
                 </div>
                 <!-- /.row -->
-
+                
                 <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Activity of NTU Respondents</h3>
-                            </div>
-                            <div class="panel-body">
-                                <div class="flot-chart">
-                                    <div class="flot-chart-content" id="flot-line-chart"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.row -->
+                    <div class="panel-body">
+                                <div class="table-responsive">
+                                    
+                                    
+                                        <?php
+                                           
+                                            $surveyId = $_GET['survey'];
+                                            $query = mysqli_query($ntu_survey, "select DISTINCT questionId , question.questionNo as 'num',question.questionDescription as 'des' from question inner join survey using (surveyId) WHERE survey.surveyId = '$surveyId'");
 
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="panel panel-green">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> NTU Respondents</h3>
-                            </div>
-                            <div class="panel-body">
-                                <div class="flot-chart">
-                                    <div class="flot-chart-content" id="flot-pie-chart">
-                                    TOTAL: 2,579 
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <a href="#">View Details <i class="fa fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-lg-4">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> Count of Respondents</h3>
-                            </div>
-                            <div class="panel-body">
-                                <div id="morris-bar-chart"></div>
-                                <div class="text-right">
-                                    <a href="#">View Details <i class="fa fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.row -->
+                                                        $count = mysqli_num_rows($query);
+                                                        if($count == 0){
+                                                           echo "<center><h3>No result Found!</h3></center>";
+                                                            echo mysqli_error($ntu_survey);
+                                                        }else{
+                                                            while($row = mysqli_fetch_assoc($query)){
+                                                                $id = $row['questionId'];
+                                                                $questionNo = $row['num'];
+                                                                $questionDescription = $row['des'];
+                                                                
+                                                                
+                                                                
+                                                                    
+                                                                
+                                                                
+                                            ?>
+                                  
+                                    
+                                      
+                                            <?php
+                                                             $queryC = mysqli_query($ntu_survey, "SELECT choice.choiceId as 'cId', choice.choiceDescription as 'cD', count(answer.choiceId) 'num' FROM choice LEFT JOIN answer using (choiceId)  WHERE choice.questionId ='$id' GROUP BY cId, cD ");
+                                                            
+                                                             $countC = mysqli_num_rows($queryC);   
+                                                                if($countC > 0){
+                                                                    echo " <h3><strong>Question No: $questionNo </strong> <em> $questionDescription</em></h3>";
+                                                                    echo"<table class='table table-bordered table-hover table-striped'>
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th class='text-center' style='width: 10%;' ><strong>Choice Description</strong></th>
+                                                                                    <th class='text-center' style='width: 5%;' ><strong>Count</strong></th>
 
-                <!-- Morris Charts -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h2 class="page-header">NTU Activities</h2>
-                        <p class="lead">
-                        
-                            Graph for the usage of the survey 
-                            
-                            <!-- Morris.js is a very simple API for drawing line, bar, area and donut charts. For full usage instructions and documentation for Morris.js charts, visit <a href="http://morrisjs.github.io/morris.js/">http://morrisjs.github.io/morris.js/</a>-->.
-                        
-                        </p>
-                    </div>
-                </div>
-                <!-- /.row -->
+                                                                                </tr>
 
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-green">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> 
-                                    <?php
-                                        echo "As of" . " ".date("Y/m/d");
 
-                                    ?>
-                                </h3>
-                            </div>
-                            <div class="panel-body">
-                                <div id="morris-area-chart">
+
+                                                                            </thead> ";
+                                                                    while($rowC = mysqli_fetch_assoc($queryC)){  
+                                                                        $choiceDescription = $rowC['cD'];
+                                                                        $num = $rowC['num'];
+                                                                        
+                                                                       
+                                                                            echo "<tr>";
+                                                                                
+                                                                                echo "<td class='text-center'>$choiceDescription</td>";
+                                                                                echo "<td class='text-center'>$num</td>";
+                                                                            echo "</tr>";
+                                                                            
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                    }
+                                                                    echo " </table>";
+                                                                    echo "<br>";
+                                                                    
+                                                                    
+                                                                }
+                                                                
+                                                            }
+                                                        }
+                                        ?>
+                                   
                                 
-                                </div>
                             </div>
                         </div>
-                    </div>
                 </div>
-                <!-- /.row -->
-
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="panel panel-yellow">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> Donut Chart Example</h3>
-                            </div>
-                            <div class="panel-body">
-                                <div id="morris-donut-chart"></div>
-                                <div class="text-right">
-                                    <a href="#">View Details <i class="fa fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="panel panel-red">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> Line Graph Example with Tooltips</h3>
-                            </div>
-                            <div class="panel-body">
-                                <div id="morris-line-chart"></div>
-                                <div class="text-right">
-                                    <a href="#">View Details <i class="fa fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.row -->
-
+                <!--/end of data tables -->
+                
             </div>
             <!-- /.container-fluid -->
 

@@ -1,0 +1,100 @@
+@font-face{
+    font-family: Myriad;
+    src: url(../MyriadPro-Regular.otf);
+}
+
+.navigation{
+    font-size: 17px;
+    font-family: Myriad;
+}
+
+.welcomeMessage{
+    color: white;
+    font-size: 15px;
+    font-family: Myriad;
+}
+
+.branding{
+    font-family: Myriad;
+    font-size: 22px;
+}
+
+.font{
+    font-family: Myriad;
+}
+
+label{
+    font-family: Myriad;
+    font-size: 20px;
+}
+
+.edit{
+    background-color: darkorange;
+}
+
+.edit:hover{
+    background-color: darkorange;
+    opacity: 0.8;
+    color: white;
+    font: Myriad;
+    font-weight: 100;
+}
+
+.cancel{
+    background-color: darkred; !important
+}
+.cancel:hover{
+    background-color: darkred;
+    opacity: 0.8;
+    color: white;
+    font: Myriad;
+    font-weight: 100;
+}
+
+.editAccount{
+    font-size: 15px; !important
+}
+
+.error{
+    color: red;
+}
+
+.pass{
+    background-color: dodgerblue;
+}
+
+.done{
+    background-color: limegreen;
+}
+
+.done:hover{
+    background-color: limegreen;
+    opacity: 0.8;
+    color: black;
+    font: Myriad;
+    font-weight: 100;
+}
+
+.manage{
+    background-color: darkorange;
+}
+
+.manage:hover{
+    background-color: darkorange;
+    opacity: 0.8;
+    color: white;
+    font: Myriad;
+    font-weight: 100;
+}
+
+.btn{
+    font-family: Tahoma;
+    color: white;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.head{
+    font-family: Tahoma;
+    letter-spacing: 2px;
+}

@@ -1,7 +1,11 @@
 <?php
     session_start();
     if ($_SESSION['loggedin'] == false ) {
-    header('Location: ../login/index.php');
+        header('Location: ../login/index.php');
+    }else{
+        if($_SESSION['type'] != 'admin'){
+            header('Location: ../login/index.php');
+        }
     } 
 ?>
 <?php
@@ -226,7 +230,7 @@
                                             </thead>
                                             <?php
 
-                                                $logA="SELECT date, action, CONCAT(firstName,' ',lastName) 'admin' FROM activitylog inner join  user on user = userId ORDER BY date";
+                                                $logA="SELECT DISTINCT date, action, CONCAT(firstName,' ',lastName) 'admin' FROM activitylog inner join  user on user = userId ORDER BY date DESC ";
 
                                                 if ($result=mysqli_query($ntu_survey, $logA)) {
                                                     if(mysqli_num_rows($result) > 0) {
@@ -264,7 +268,7 @@
                                             </thead>
                                             <?php
 
-                                                $logS="SELECT date, actionSurvey, CONCAT(firstName,' ',lastName) 'admin' FROM surveylog inner join  user on user = userId ORDER BY date";
+                                                $logS="SELECT DISTINCT date, actionSurvey, CONCAT(firstName,' ',lastName) 'admin' FROM surveylog inner join  user on user = userId ORDER BY date DESC";
 
                                                 if ($result=mysqli_query($ntu_survey, $logS)) {
                                                     if(mysqli_num_rows($result) > 0) {
@@ -277,7 +281,7 @@
                                                         }
                                                     }
                                                 }
-
+                                                        
                                             ?>
                                         </table>
                                     </div>

@@ -1,65 +1,28 @@
 <?php
     session_start();
     ob_start();
+
     if ($_SESSION['loggedin'] == false ) {
-    header('Location: ../login/index.php');
-    } 
+        header('Location: ../login/index.php');
+    }else{
+        if($_SESSION['type'] != 'admin'){
+            header('Location: ../login/index.php');
+        }
+    }
 ?>
 <?php
 
-        $ntu_survey = new mysqli("localhost", "root", "", "ntu_survey");
-        // Check connection
-        if ($ntu_survey->connect_error) {
-            die("Connection failed: " . $ntu_survey->connect_error);
-        }
+    $ntu_survey = new mysqli("localhost", "root", "", "ntu_survey");
+    // Check connection
+    if ($ntu_survey->connect_error) {
+        die("Connection failed: " . $ntu_survey->connect_error);
+    }
 ?>
- <?php
- if (isset($_POST['delQ'])) {
-     $surveyId = $_GET['survey'];
-     
-     $id = $_POST['sId'];
-     $date = date('Y-m-d H:i:s');
-                                                                
-     $email = $_SESSION['username'];
-     $query="SELECT userId from user where email='$email'";                                                          
-     $result = mysqli_query($ntu_survey, $query);                                                        
-     $row = $result->fetch_assoc();                                                                
-     $adminId = $row["userId"];
-     
-     
 
-                                                                
-     $q="SELECT questionNo from question where questionId='$id'";                                                                  
-     $result1 = mysqli_query($ntu_survey, $q);                                                               
-     $qR = $result1->fetch_assoc();
-     $qNo = $qR['questionNo'];
-     
-     $queryS="SELECT surveyTitle from survey where surveyId='$surveyId'";
-     $resultS = mysqli_query($ntu_survey, $queryS);
-     $rowS = $resultS->fetch_assoc();
-     $surveyTitle = $rowS["surveyTitle"];
 
-                                                                
-     $sql ="INSERT INTO surveylog (date, actionSurvey, user) VALUES (CONVERT_TZ('$date', '+00:00', '+8:00'),'Delete question number  " . $qNo . " in ". $surveyTitle ."', '$adminId')";
 
-                                                                
-     if ($ntu_survey->query($sql) === TRUE){ 
-                                                                   
-         $result = mysqli_query($ntu_survey,"DELETE FROM question WHERE questionId='$id'") or die(mysqli_error());
-                                                               
-     } else {
-                                                                        
-         echo "Error: " . $sql . "<br>" . $ntu_survey->error;
-                                                                
-                                                               
-     }
-                                                             
- }
-                                                            
-?>
-                                                        
 
-<!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -70,7 +33,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>NTU | Admin</title>
+    <title>NTU | ADMIN</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -78,27 +41,17 @@
     <!-- Custom CSS -->
     <link href="css/sb-admin.css" rel="stylesheet">
 
-    <!-- Morris Charts CSS -->
-    <link href="css/plugins/morris.css" rel="stylesheet">
-    
-    <link href="css/style.css" rel="stylesheet">
-
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 
 </head>
 
 <body>
-
+    
     <div id="wrapper">
-       <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -194,14 +147,28 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="../landing/index.php" name="Logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                    <?php
-                        if(isset($_POST['Logout'])) {
-                            session_destroy(); 
-                            $_SESSION['loggedin'] = false;
-                            session_destroy();       
-                        } 
-                    ?>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i><b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="../landing/index.php" name="Logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                            <?php
+                                if(isset($_POST['Logout'])) {
+                                    $_SESSION['loggedin'] = false;
+                                    session_destroy();
+                                } 
+                             ?>
+                        </li>
+                    </ul>
                 </li>
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
@@ -210,7 +177,7 @@
                     <li>
                         <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
-                    <li >
+                    <li>
                         <a href="manage.php"><i class="fa fa-fw fa-user"></i>Manage Account</a>
                     </li>
                     <li class="active">
@@ -227,184 +194,182 @@
             <!-- /.navbar-collapse -->
         </nav>
 
-        
         <div id="page-wrapper">
 
             <div class="container-fluid">
-
-                <!-- Page Heading -->
-                <div class="row">
+                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header head">
-                            Edit Question
+                        <h1 class="page-header">
+                             Edit Questionnaire
                         </h1>
                         <ol class="breadcrumb">
-                            <?php
-                                $s =$_GET['survey'];
                             
-                            ?>
                             <li>
-                                <i class="fa fa-pencil"></i>  <a href="<?php echo "editSurvey.php?survey=$s";?>">Edit Survey</a>
+                                <i class="fa fa-file-text-o"></i>
+                                <?php
+                                     $surveyId = $_GET['survey'];
+                                ?>
+                                 <a href="<?php echo "show.php?survey=$surveyId";?>">Survey Preview</a>
                             </li>
                             <li class="active">
-                                <i class="fa fa-pencil"></i> Edit Question
+                               <i class="fa fa-pencil"></i>   Edit Questionnaire
                             </li>
                         </ol>
                     </div>
                 </div>
+
+                <!-- Page Heading -->
                 <div class="row">
                     <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Survey Name:<strong>
+                            <?php
+                               
+                                $query="SELECT surveyTitle from survey where surveyId='$surveyId'";
+                                $result = mysqli_query($ntu_survey, $query);
+                                $row = $result->fetch_assoc();
+                                $surveyTitle = $row["surveyTitle"];
+                                echo "$surveyTitle";
+                            ?></strong> 
+                        </h1>
+                    </div>
+                </div>
+                <!-- /.row -->
+                
+                <div class="row">
+                    <div class="col-lg-12">
+                        
+                        
                         <?php
+                            
                                                 
-                            $questions = "select DISTINCT questionId , question.questionNo as 'num',question.questionDescription as 'des' from question inner join survey using (surveyId) WHERE survey.surveyId = '$s'";
+                            $questions = "select questionId , question.questionNo as 'num',question.questionDescription as 'des' from question inner join survey using (surveyId) WHERE survey.surveyId = '$surveyId'";
                         
                              
                             
                         
                             if ($result=mysqli_query($ntu_survey, $questions)) {
                                 if(mysqli_num_rows($result) > 0) {
+                                    echo "<h3 class='page-header'>Edit Questions:</h3>";
+                                    echo "<form action='editQuestion.php?survey=$surveyId' method='POST' >";
                                     while ($row=mysqli_fetch_array($result)){
-                                        echo "<form action='editSurvey.php?survey=$s' method='POST' >";
-                        ?>            
-                                    <div class = "form-group">
-                                                                    
-                                        <div class="col-md-1">
-                                            <input type="text" class="form-control" name="num"  value="<?php echo "" . $row['num'] . ""; ?>">
-                                        </div> 
-                                        <div class="col-lg-7">
-                                            <input type="text" class="form-control" name="q" value="<?php echo "" . $row['des'] . ""; ?>">
-                                        </div>
-                                        <div class='col-xs-1'>
-                                            <button type='submit' class='btn btn-default btn-sm' name='submit' ><i class='fa fa-trash-o' aria-hidden='true'></i></button>
-                                        </div>
-                                        <br>
-                                        <br>
-                                        <br>
-                                        <?php
-                                            
-                                           
-                                            $temp = $row['questionId'];
-                                            $choice = $row['questionId'];
-                                            $choices = "SELECT questionId, choice.choiceId as 'cId', choice.choiceDescription as 'cD' FROM choice WHERE questionId ='$temp' ";
                                         
-                                            $i=0;
-                                            $w = 0;
-                                                       
+                                        
+                        ?>          
+                                    <div class="row">
+                                        <div class="col-lg-12">
                                             
-                                            if ($result1=mysqli_query($ntu_survey, $choices)) {
-                                                if(mysqli_num_rows($result1)>0){
-                                                    while ($row1=mysqli_fetch_array($result1)){ 
-                                                        echo "
-                                                            <div class='col-lg-8'> 
-                                                                <input type='hidden' name='choice[$choice][]' value='" . $row1['cId'] .  "'>
-                                                                <input type='text' class='form-control' name='ch[$choice][]' value='" . $row1['cD'] . "'> 
-                                                            </div>
-                                                            <div class='col-xs-1'>
-                                                                <button type='submit' class='btn btn-default btn-sm' name='submit' ><i class='fa fa-trash-o' aria-hidden='true'></i></button>
-                                                            </div>";
+                                            <div class ='form-group'>
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                    <h4><label><strong><?php echo "" . $row['num'] . ""; ?> .</strong> <?php echo "" . $row['des'] . ""; ?> </label></h4>
+                                                
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                    <a href="edit.php?qId=<?php echo "".$row['questionId']."";?>" ><button type="button" class="btn btn-basic " ><i class="fa fa-pencil" aria-hidden="true"></i></button></a>
+                                                    
+                                                    <input type="text" name='id[<?php echo "" . $row['questionId'] . "";?>]' value="<?php echo "" . $row['questionId'] . "";?>">    
+                                                    <button type="submit" class="btn btn-danger" name="del"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                                                    
+                                                    </div>
+                                                    
+                                                    
+                                                    
+                                                </div>
+                                                <div class="row">
+                                                <?php
+                                                   
+                                                    $temp = $row['questionId'];
+                                                    $description =$row['des'];
+                                                    $choices = "SELECT choice.choiceId as 'cId', choice.choiceDescription as 'cD' FROM choice WHERE questionId ='$temp' ";
+                                                    $i=0;
+                                                    if ($result1=mysqli_query($ntu_survey, $choices)) {
+                                                        while ($row1=mysqli_fetch_array($result1)){ 
+                                                            
+                                                            
+                                                            echo "<div class='col-lg-8'><input type='radio' name='choice' value='" . $row1['cId'] .  "'>" . $row1['cD'] . " </input></div>";
+                                                            echo "<br>";
+                                                            
                                                             $i++;
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                     
-                                                    }
-                                                    if($i == 4){
-                                                        echo "
-                                                            <div class='col-lg-8'> 
-                                                                <input type='hidden' name='choice[$choice][]''>
-                                                                <input type='text' class='form-control' name='newChoice'> 
-                                                            </div>
-                                                            <div class='col-xs-1'>
-                                                                <button type='submit' class='btn btn-default btn-sm' name='submit' ><i class='fa fa-trash-o' aria-hidden='true'></i></button>
-                                                            </div>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                    }else if ($i == 3){
-                                                        while($w != 2){
-                                                            echo "
-                                                            <div class='col-lg-8'> 
-                                                                <input type='hidden' name='choice[$choice][]' value='" . $row1['cId'] .  "'>
-                                                                <input type='text' class='form-control' name='newChoice' value='" . $row1['cD'] . "'> 
-                                                            </div>
-                                                            <div class='col-xs-1'>
-                                                                <button type='submit' class='btn btn-default btn-sm' name='submit' ><i class='fa fa-trash-o' aria-hidden='true'></i></button>
-                                                            </div> ";
-                                                            $w++;
                                                             
                                                         }
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
                                                         
-                                                        
-                                                    }else if ($i == 2){
-                                                        while($w != 3){
-                                                            echo "
-                                                            <div class='col-lg-8'> 
-                                                                <input type='hidden' name='choice[$choice][]' value='" . $row1['cId'] .  "'>
-                                                                <input type='text' class='form-control' name='newChoice' value='" . $row1['cD'] . "'> 
-                                                            </div>
-                                                            <div class='col-xs-1'>
-                                                                <button type='submit' class='btn btn-default btn-sm' name='submit' ><i class='fa fa-trash-o' aria-hidden='true'></i></button>
-                                                            </div> ";
-                                                            $w++;
-                                                            
-                                                        } 
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                        echo "<br>";
-                                                    } 
+                                                       
+                                                    }
+                                                
+                                             ?>
+                                               <br>
+                                                
+                                                <?php
+                                                        if($i < 5 ){
+                                                            echo  "<div class='col-lg-1'><a href='add.php?qId=".$row['questionId']."' ><button type='button' class='btn btn-primary btn-sm '><i class='fa fa-plus' aria-hidden='true'></i>Add Choice</button></a></div>";
+                                                             echo "<br>";
+                                                        }
+                                            
+                                                    echo"</div>";
+                                                    echo "<br>";
+                                                    echo "<hr>";
+                                                    
                                                 }
-                                            }
-                                        ?>
-                                                 
+                                                
+                                                
+                                            ?>
+                                                
+                                                </div>
+                                                
+                                                
+                                                
+
+                                            </div>
+                                        </div>
                                     </div>
-                                    
-                                    <hr>
+                            
                                
                             <?php
-                                
-                                   }
-                                }else{
-                                     echo "<center><h3>There are no Questions!</h3></center>";
-                                }
-                            }
-                            ?> 
-                        
-                            <?php
-                                
+                               
+                                     
+                                echo "<br>";  
                                 echo "<br>";
                                 echo "<div class='row'>
-                                        <div class='col-lg-10'>
-                                            <a href='editSurvey.php?survey=$s'><button type='button' class='btn btn-default btn-lg'>Back</button></a>
+                                        <div class='col-lg-11'>
+                                            <a href='survey.php'><button type='button' class='btn btn-default btn-lg'>Back</button></a>
                                         </div>
                                         <div class='col-lg-1'>
-                                            <button type='submit' class='btn btn-default btn-lg' name='submit' ><strong> Submit Survey </strong></button>
+                                            <a href='show.php?survey=$surveyId'><button type='button' class='btn btn-default btn-lg'><strong> Done </strong></button></a>
                                         </div>
-                                     </div>";
+                                     </div>";  
+                                                      
                                 echo "</form>";
-                                
-                                if(isset($_POST['submit'])){
-                                    
-                                    $num = $_POST['num'];
-                                    $q = $_POST['q'];
-                                    $ch= $_POST['choice'];
-                                    
-                                    
+                                     
                                 }
-                               
+                            
+                                    
+                                    
+                                
+                            }
+                            ?>  
+                            <?php
+                                if(isset($_POST['del'])){
+
+                                    $idQ = $_POST['id'];
+                                    
+                                    foreach($idQ as $qId => $valQ){
+                                        $newQ =$valQ;
+                                        
+                                        
+                                        
+                                        
+                                    }
+                                    
+                                    
+                                    
+
+                                 }
                             ?>
                     </div>
                 </div>
-                <br>
-                <br>
-             </div>
+                
+            </div>
             <!-- /.container-fluid -->
 
         </div>
@@ -419,6 +384,7 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 
+  
 </body>
 
 </html>

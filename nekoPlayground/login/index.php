@@ -41,17 +41,20 @@
                     
                     $_SESSION['loggedin'] = true;
                     $_SESSION['username'] = $username;
+                    $_SESSION['type'] = 'respondent';
 
                     header("Location: ../respondent/index.php");
 
                     }else if(mysqli_num_rows($resultA) > 0) {
                     $_SESSION['loggedin'] = true;
                     $_SESSION['username'] = $username;
+                    $_SESSION['type'] = 'admin';
                     header("Location: ../admin/index.php"); 
 
                     }else if(mysqli_num_rows($resultS) > 0) {
                     $_SESSION['loggedin'] = true;
                     $_SESSION['username'] = $username;
+                    $_SESSION['type'] = 'supervisor';
                     header("Location: ../supervisor/index.php"); 
 
                     }else {
